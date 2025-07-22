@@ -160,59 +160,6 @@ class AdminController extends CI_Controller
     public function Billing() {
         $this->load->view('Admin/BillSection');
     }
-    //prifile 
-
-    public function Profile() {
-        $this->load->view('Admin/Admin_Profile');
-    }
-    public function reset_password() {
-    $hashed = password_hash('admin123', PASSWORD_DEFAULT);
-    $this->db->where('username', 'admin');
-    $this->db->update('users', ['password' => $hashed]);
-    echo "Password reset successfully.";
-}
-
-public function change_password_handler()
-{
-    $this->load->model('Admin_Model');
-
-    $currentPassword = $this->input->post('currentPassword');
-    $newPassword     = $this->input->post('newPassword');
-    $confirmPassword = $this->input->post('confirmPassword');
-    $userId = $this->session->userdata('user_id');
-
-    if (!$userId) {
-        $this->session->set_flashdata('error', 'Unauthorized access.');
-        redirect('AdminController/Profile');
-    }
-
-    $user = $this->Admin_Model->get_user_by_id($userId);
-
-    if (!$user) {
-        $this->session->set_flashdata('error', 'User not found.');
-        redirect('AdminController/Profile');
-    }
-
-    // Validate current password (hashed or plain)
-    $isValid = false;
-    if (password_verify($currentPassword, $user->password) || $user->password === $currentPassword) {
-        $isValid = true;
-    }
-
-    if (!$isValid) {
-        $this->session->set_flashdata('error', 'Current password is incorrect.');
-        redirect('AdminController/Profile');
-    }
-
-    if ($newPassword !== $confirmPassword) {
-        $this->session->set_flashdata('error', 'New passwords do not match.');
-        redirect('AdminController/Profile');
-    }
-
-    $this->Admin_Model->update_password($userId, $newPassword);
-    $this->session->set_flashdata('success', 'Password updated successfully.');
-    redirect('AdminController/Profile');
-}
 
 }
 

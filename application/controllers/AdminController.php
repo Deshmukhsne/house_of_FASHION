@@ -63,7 +63,7 @@ class AdminController extends CI_Controller
             $password = $this->input->post('password', TRUE);
             $role     = $this->input->post('role', TRUE);
 
-            $user = $this->Login_model->check_login($username, $password, $role);
+            $user = $this->Login_Model->check_login($username, $password, $role);
 
             if ($user) {
                 $this->session->set_userdata([

@@ -160,6 +160,13 @@ class AdminController extends CI_Controller
     public function Billing() {
         $this->load->view('Admin/BillSection');
     }
+    
+    public function ProductInventory() {
+    $this->load->model('Product_model'); // make sure this line exists
+    $data['products'] = $this->Product_model->get_all_products();
+    $this->load->view('Admin/product_inventory', $data);
+}
 
+    
 }
 

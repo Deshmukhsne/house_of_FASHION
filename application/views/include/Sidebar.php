@@ -275,7 +275,7 @@
 
                 <!-- Services -->
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                    <a href="http://localhost/House_Of_Fashion/AdminController/ProductInventory" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
                         <i class="bi bi-box me-2"></i>
                         <span class="ms-1">Stock</span>
                     </a>
@@ -328,13 +328,13 @@
                     <div class="collapse" id="billingSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="http://localhost/Mahalaxmi/AdminController/BillSection" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
+                                <a href="" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
                                     <i class="bi bi-file-earmark-plus"></i>
                                     <span class="ms-1">Bill Section</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="http://localhost/Mahalaxmi/AdminController/BillHistory" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
+                                <a href="" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
                                     <i class="bi bi-clock-history"></i>
                                     <span class="ms-1">Bill History</span>
                                 </a>

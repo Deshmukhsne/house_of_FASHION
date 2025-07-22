@@ -156,5 +156,10 @@ class AdminController extends CI_Controller
         redirect('AdminController/StaffManagement');
     }
 
+    //billing 
+    public function Billing() {
+        $this->load->view('Admin/BillSection');
+    }
+
 }
 

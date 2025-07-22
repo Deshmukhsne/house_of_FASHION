@@ -353,13 +353,13 @@
                     <div class="collapse" id="reportsSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="http://localhost/Mahalaxmi/AdminController/dailyreport" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
+                                <a href="" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
                                     <i class="bi bi-calendar-day"></i>
                                     <span class="ms-1">Daily Report</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="http://localhost/Mahalaxmi/AdminController/monthlyreport" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
+                                <a href="" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
                                     <i class="bi bi-calendar2-month"></i>
                                     <span class="ms-1">Monthly Report</span>
                                 </a>
@@ -380,7 +380,7 @@
                     </a>
                 <!-- Profile -->
                 <li class="sidebar-item">
-                    <a href="http://localhost/Mahalaxmi/AdminController/profile" class="sidebar-link" id="profile-link" style="font-size: 20px;">
+                    <a href="" class="sidebar-link" id="profile-link" style="font-size: 20px;">
                         <i class="bi bi-person-fill"></i>
                         <span class="ms-1">Profile</span>
                     </a>

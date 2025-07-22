@@ -380,7 +380,7 @@
                     </a>
                 <!-- Profile -->
                 <li class="sidebar-item">
-                    <a href="http://localhost/Mahalaxmi/AdminController/profile" class="sidebar-link" id="profile-link" style="font-size: 20px;">
+                    <a href="http://localhost/House_Of_Fashion/AdminController/Profile" class="sidebar-link" id="profile-link" style="font-size: 20px;">
                         <i class="bi bi-person-fill"></i>
                         <span class="ms-1">Profile</span>
                     </a>

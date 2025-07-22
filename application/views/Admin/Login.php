@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Login</title>
+  <title>Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <style>
@@ -176,12 +176,19 @@
         <img src="<?php echo base_url('assets/images/logo-small.jpg');  ?>"  alt="Company Logo" class="company-logo">
 
         <h1>Login</h1>
-        <form action="<?= base_url('auth/login') ?>" method="post">
+        <?php if ($this->session->flashdata('error')): ?>
+        <div class="alert alert-danger text-center mt-2">
+          <?= $this->session->flashdata('error'); ?>
+        </div>
+      <?php endif; ?>
+
+        <form action="<?= base_url('AdminController/AfterLogin') ?>" method="post">
           <label for="role">Select Role</label>
           <select id="role" name="role" required>
-            <option value="admin">Admin</option>
-            <option value="accountant">Accountant</option>
-            <option value="staff">Staff</option>
+            <option value="" disabled selected >Select Role</option>
+            <option value="Admin">Admin</option>
+            <option value="Accountant">Accountant</option>
+            <option value="Staff">Staff</option>
           </select>
 
           <label for="username">Username</label>

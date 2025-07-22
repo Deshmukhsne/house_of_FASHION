@@ -1,207 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Responsive Sidebar - House of Fashion</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Billing Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Sidebar */
+        a {
+            text-decoration: none;
+        }
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+        }
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      background-color: #f8f9fa;
-    }
+        ::-webkit-scrollbar {
+            width: 0;
+        }
 
-    /* Sidebar */
-    .sidebar {
-      height: 100vh;
-      width: 250px;
-      position: fixed;
-      padding: 30px 20px;
-      background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.9)),
-                  url('<?php echo base_url("assets/images/sidebar_bg.jpg"); ?>') no-repeat center center;
-      background-size: cover;
-      transition: width 0.3s ease;
-      z-index: 999;
-    }
+        /* === Layout === */
+        .main {
+            width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+        }
 
-    .sidebar.collapsed {
-      width: 80px;
-    }
+        /* === Sidebar === */
+        #sidebar {
+            width: 280px;
+            height: 100vh;
+          background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.9)),url('<?php echo base_url("assets/images/sidebar_bg.jpg"); ?>') no-repeat center center;            color: #fff;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            transition: all 0.35s ease-in-out;
+        }
 
-    /* Logo */
-    .sidebar-logo {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+        #sidebar.collapsed {
+            margin-left: -280px;
+        }
 
-    .logo-full {
-      width: 160px;
-      transition: 0.3s ease;
-    }
+        .sidebar-nav {
+            flex: 1 1 auto;
+            overflow-y: auto;
+        }
 
-    .logo-circle {
-      width: 50px;
-      display: none;
-      transition: 0.3s ease;
-    }
+        /* === Sidebar Logo === */
+        .sidebar-logo {
+            text-align: center;
+            padding: 1.2rem;
+            position: relative;
+        }
 
-    .sidebar.collapsed .logo-full {
-      display: none;
-    }
+        .sidebar-logo img {
+            width: 150px;
+            height: 80px;
+        }
 
-    .sidebar.collapsed .logo-circle {
-      display: inline-block;
-    }
+        .sidebar-logo span {
+            font-weight: bold;
+            font-size: 1.4rem;
+            background: linear-gradient(to bottom, rgb(255, 217, 0), #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
 
-    /* Nav Links */
-    .sidebar .nav-link {
-      color: #f0d75d;
-      font-weight: 500;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      padding: 12px 18px;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      background: rgba(255, 215, 0, 0.05);
-      white-space: nowrap;
-    }
+        /* === Close Button (Mobile) === */
+        .close-sidebar {
+            display: none;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #333;
+            cursor: pointer;
+        }
 
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-      background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
-      color: black !important;
-      transform: translateX(5px);
-    }
+        /* === Sidebar Link === */
+        .page-heading {
+            background: linear-gradient(90deg, #fffbe6 0%, #ffe4b5 100%);
+            color: #8B004D !important;
+            font-weight: 700;
+            padding: 8px 10px;
 
-    .sidebar.collapsed .nav-link span {
-      display: none;
-    }
+            margin-bottom: 20px;
+            border-radius: 4px 4px 4px 4px!important;
+        }
 
-    .sidebar.collapsed .nav-link {
-      justify-content: center;
-      padding: 12px 0;
-    }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            font-size: 18px;
+            color: #fac852ff;
+            position: relative;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
 
-    /* Toggle Button */
-    .toggle-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-    }
+        .sidebar-link i {
+            margin-right: 0.8rem;
+            font-size: 1.1rem;
+        }
 
-    /* Main Content */
-    .main-content {
-      margin-left: 250px;
-      padding: 30px;
-      transition: margin-left 0.3s ease;
-    }
+        /* Hover Effects */
+        .sidebar-link:hover,
+        .sidebar-link:focus {
+            background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
+            color: black !important;
+            box-shadow: 0 2px 12px rgba(209, 78, 120, 0.15);
+            transform: translateX(6px) scale(1.03);
+            z-index: 1;
+        }
 
-    .sidebar.collapsed ~ .main-content {
-      margin-left: 80px;
-    }
+        .sidebar-link:hover i,
+        .sidebar-link:focus i {
+            /* color: #FFD700; */
+        }
 
-    /* Responsive Behavior */
-    @media (max-width: 992px) {
-      .sidebar {
-        transform: translateX(-100%);
-        position: fixed;
-        left: 0;
-        top: 0;
-        transition: transform 0.3s ease;
-      }
+        /* Active Link */
+        .sidebar-link.active {
+            background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
+            color: #8B004D !important;
+            font-weight: 700;
+            border-left: 4px solid #8b004d;
+            box-shadow: 0 2px 8px rgba(255, 217, 0, 0.1);
+        }
 
-      .sidebar.show {
-        transform: translateX(0);
-      }
+        .sidebar-link.active i {
+            color: #d14e78 !important;
+        }
 
-      .main-content {
-        margin-left: 0 !important;
-      }
+        /* === Dropdown Arrows Working === */
+        .sidebar-link[data-bs-toggle="collapse"]::after {
+            content: "";
+            border: solid currentColor;
+            border-width: 0 2px 2px 0;
+            padding: 3px;
+            position: absolute;
+            right: 1.5rem;
+            top: 1.25rem;
+            transform: rotate(45deg);
+            transition: transform 0.3s ease-in-out;
+        }
 
-      .toggle-btn {
-        left: 15px;
-      }
-    }
-  </style>
+        .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+            transform: rotate(-45deg);
+        }
+
+        /* Submenu Items */
+        .nav .nav-item .sidebar-link {
+            padding-left: 2rem;
+            font-size: 17px;
+        }
+
+        .collapse {
+            margin-left: 0.5rem;
+        }
+
+        /* === Footer === */
+        .sidebar-footer {
+            padding: 0.75rem 1.25rem;
+        }
+
+        .sidebar-footer a {
+            font-size: 16px;
+            color:  #fac852ff;
+        }
+
+        .sidebar-footer a:hover {
+            background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
+            color:black !important;
+            transform: translateX(4px) scale(1.02);
+        }
+
+        /* === Navbar === */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 15px;
+            background-color: #fff;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.35s ease-in-out;
+        }
+
+        /* === Toggler Button === */
+        .toggler-btn {
+            background-color: transparent;
+            cursor: pointer;
+            border: 0;
+            display: inline-block;
+        }
+
+        .toggler-btn i {
+            font-size: 1.75rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* === Responsive === */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                z-index: 1100;
+                left: 0;
+                top: 0;
+            }
+
+            #sidebar.collapsed {
+                margin-left: 0;
+            }
+
+            .sidebar-toggle {
+                margin-left: -280px;
+            }
+
+            .close-sidebar {
+                display: block;
+            }
+
+            .navbar {
+                height: 9%;
+                width: 100%;
+                left: 0;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .dropdown-menu-end {
+                left: auto;
+                right: 0;
+            }
+        }
+
+        @media (max-width: 530px) {
+            #notificationDropdown {
+                max-width: 300px !important;
+                margin-left: 0 !important;
+            }
+        }
+    </style>
 </head>
+
 <body>
+    <div class="d-flex">
+        <aside id="sidebar" class="sidebar-toggle bg-light">
+            <div class="sidebar-logo"> 
+<img src="<?php echo base_url('assets/images/logo.jpg'); ?>" class="logo-full" alt="Full Logo">
+                <i class="bi bi-x-lg close-sidebar mt-3"></i>
+            </div>
+            <!-- Sidebar Navigation -->
+            <ul class="sidebar-nav p-0 mt-4" style="font-size: 1.15rem;">
+                <!-- Profile Image & Name -->
+                  <!-- Dashboard -->
+                <li class="sidebar-item">
+                    <a href="<?= base_url('AdminController/Dashboard') ?>" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                        <i class="bi bi-house-fill"></i>
+                        <span class="ms-1">Dashboard</span>
+                    </a>
+                </li>
 
-  <!-- Sidebar Toggle Button -->
-  <button class="btn btn-dark toggle-btn d-lg-block d-inline-block" id="toggleSidebar">
-    <i class="bi bi-list"></i>
-  </button>
+                <!-- Services -->
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                        <i class="bi bi-box me-2"></i>
+                        <span class="ms-1">Stock</span>
+                    </a>
+                    <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                        <i class="bi bi-people"></i>
+                        <span class="ms-1">Customers</span>
+                    </a>
+              
+                    <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                        <i class="bi bi-cart-check me-2"></i>
+                        <span class="ms-1">Orders</span>
+                    </a>
+                      <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                        <i class="bi bi-droplet-half me-2"></i>
+                        <span class="ms-1">Dry Cleaning</span>
+                    </a>
+                    
+                     
+                    <!-- <div class="collapse" id="servicesSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a href="http://localhost/Mahalaxmi/Dashboard/Categories" class="sidebar-link" id="saree-link" style="font-size: 18px;">
+                                    <i class="bi bi-flower1"></i>
+                                    <span class="ms-1">Saree</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://localhost/Mahalaxmi/dress" class="sidebar-link" id="dress-link" style="font-size: 18px;">
+                                    <i class="bi bi-person-lines-fill"></i>
+                                    <span class="ms-1">Dress</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://localhost/Mahalaxmi/accessories" class="sidebar-link" id="accessories-link" style="font-size: 18px;">
+                                    <i class="bi bi-gem"></i>
+                                    <span class="ms-1">Accessories</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div> -->
+                </li>
 
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <img src="<?php echo base_url('assets/images/logo.jpg'); ?>" class="logo-full" alt="Full Logo">
-      <img src="<?php echo base_url('assets/images/logo-small.jpg'); ?>" class="logo-circle" alt="Circle Logo">
+                <!-- Billing -->
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link dropdown-toggle collapsed" id="billing-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#billingSubmenu" aria-expanded="false" style="font-size: 20px;">
+                        <i class="bi bi-receipt-cutoff"></i>
+                        <span class="ms-1">Billing</span>
+                    </a>
+                    <div class="collapse" id="billingSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a href="http://localhost/Mahalaxmi/AdminController/BillSection" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
+                                    <i class="bi bi-file-earmark-plus"></i>
+                                    <span class="ms-1">Bill Section</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://localhost/Mahalaxmi/AdminController/BillHistory" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
+                                    <i class="bi bi-clock-history"></i>
+                                    <span class="ms-1">Bill History</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Reports -->
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link dropdown-toggle collapsed" id="reports-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#reportsSubmenu" aria-expanded="false" style="font-size: 20px;">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <span class="ms-1">Reports</span>
+                    </a>
+                    <div class="collapse" id="reportsSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a href="http://localhost/Mahalaxmi/AdminController/dailyreport" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
+                                    <i class="bi bi-calendar-day"></i>
+                                    <span class="ms-1">Daily Report</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://localhost/Mahalaxmi/AdminController/monthlyreport" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
+                                    <i class="bi bi-calendar2-month"></i>
+                                    <span class="ms-1">Monthly Report</span>
+                                </a>
+                            </li>
+
+                            <!-- <li class="nav-item">
+                                <a href="http://localhost/Mahalaxmi/AdminController/yearlyreport" class="sidebar-link" id="yearlyreport-link" style="font-size: 18px;">
+                                    <i class="bi bi-calendar2-range"></i>
+                                    <span class="ms-1">Yearly Report</span>
+                                </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                </li>
+                <a href="<?= base_url('AdminController/StaffManagement') ?>" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                        <i class="bi-person-lines-fill"></i>
+                        <span class="ms-1">Staff Management</span>
+                    </a>
+                <!-- Profile -->
+                <li class="sidebar-item">
+                    <a href="http://localhost/Mahalaxmi/AdminController/profile" class="sidebar-link" id="profile-link" style="font-size: 20px;">
+                        <i class="bi bi-person-fill"></i>
+                        <span class="ms-1">Profile</span>
+                    </a>
+                </li>
+            </ul>
+
+
+            <!-- LOGOUT -->
+
+            <div class="sidebar-footer mb-3">
+    <a href="#" id="logout-btn" class="sidebar-link" style="font-size: 16px;">
+        <i class="bi bi-box-arrow-left"></i>
+        <span class="ms-1">Log out</span>
+    </a>
+</div>
+
+
     </div>
 
-    <ul class="nav flex-column">
-      <li class="nav-item">
-        <a class="nav-link active" href="#">
-          <i class="bi bi-speedometer2"></i>
-          <span>Dashboard</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="bi bi-box-seam"></i>
-          <span>Inventory</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="bi bi-cash-stack"></i>
-          <span>Payments</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="bi bi-basket2"></i>
-          <span>Orders</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="bi bi-people"></i>
-          <span>Users</span>
-        </a>
-      </li>
-    </ul>
-  </div>
 
-  <!-- Main Content -->
-  <div class="main-content" id="main">
-    <h1>Welcome to House of Fashion</h1>
-    <p>This is your main content area. The sidebar is fully responsive, collapsible, and styled.</p>
-  </div>
+    </aside>
 
-  <!-- Bootstrap & Sidebar Toggle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    const sidebar = document.getElementById('sidebar');
-    const toggle = document.getElementById('toggleSidebar');
 
-    toggle.addEventListener('click', function () {
-      if (window.innerWidth < 992) {
-        sidebar.classList.toggle('show');
-      } else {
-        sidebar.classList.toggle('collapsed');
-        document.getElementById('main').classList.toggle('collapsed');
-      }
+<script>
+document.getElementById('logout-btn').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you really want to logout?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "<?= base_url('AdminController/login') ?>";
+        }
     });
-  </script>
+});
+</script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </body>
+
 </html>

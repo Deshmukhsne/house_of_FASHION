@@ -113,204 +113,30 @@
             <!-- Navbar Include -->
             <?php $this->load->view('include/Navbar'); ?>
             <div class="container-fluid">
-        <!-- Stats Row -->
-            <!-- Add this inside your <body> -->
-<button class="btn btn-gold m-4" data-bs-toggle="modal" data-bs-target="#addStockModal">Add Stock</button>
+       <div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="fw-bold">Stock Overview</h4>
+  <button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#addStockModal">
+    <i class="bi bi-plus-circle"></i> Add Stock
+  </button>
+</div>
 
-<!-- Add Stock Modal -->
-<div class="modal fade" id="addStockModal" tabindex="-1" aria-labelledby="addStockModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg">
-    <div class="modal-content rounded-4 border-0 shadow">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title" id="addStockModalLabel">Add Stock</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body p-4">
-        <form id="addStockForm">
-          <div class="row g-4">
-
-            <div class="col-md-6">
-              <label for="productId" class="form-label">Product ID</label>
-              <input type="text" id="productId" class="form-control" placeholder="e.g. P1023" required>
-            </div>
-
-            <div class="col-md-6">
-              <label for="productName" class="form-label">Product Name</label>
-              <input type="text" id="productName" class="form-control" placeholder="e.g. Golden Sherwani" required>
-            </div>
-
-            <div class="col-md-6">
-              <label for="category" class="form-label">Category</label>
-              <select id="category" class="form-select" required>
-                <option value="" disabled selected>Select Category</option>
-                <option>Lehenga</option>
-                <option>Sherwani</option>
-                <option>Gown</option>
-                <option>Suit</option>
-                <option>Accessories</option>
-              </select>
-            </div>
-
-            <div class="col-md-4">
-              <label for="quantity" class="form-label">Quantity</label>
-              <input type="number" id="quantity" class="form-control" min="1" value="1" required>
-            </div>
-
-            <div class="col-md-4">
-              <label for="price" class="form-label">Price (₹)</label>
-              <input type="number" id="price" class="form-control" min="0" value="0" required>
-            </div>
-
-            <div class="col-md-4">
-              <label for="total" class="form-label">Total (₹)</label>
-              <input type="text" id="total" class="form-control" readonly>
-            </div>
-
-            <div class="col-md-6">
-              <label for="status" class="form-label">Status</label>
-              <select id="status" class="form-select" required>
-                <option>Available</option>
-                <option>Out of Stock</option>
-                <option>On Rent</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label for="image" class="form-label">Upload Product Image</label>
-              <input type="file" id="image" class="form-control" accept="image/*" onchange="previewImage(event)">
-            </div>
-
-            <div class="col-12">
-              <div class="image-preview position-relative mt-3" id="imagePreviewBox" style="display:none;">
-                <img id="preview" class="img-fluid rounded-3" />
-                <div class="overlay-label" id="statusOverlay"></div>
-                <button type="button" class="btn btn-dark btn-sm view-details-btn">View Details</button>
-              </div>
-            </div>
-
-            <div class="col-12 mt-3">
-              <button type="submit" class="btn btn-gold w-100">Add Product</button>
-            </div>
-
-          </div>
-        </form>
-      </div>
-    </div>
-    </div
-            </div>
+<div class="row g-4">
+  <?php foreach($stock_items as $item): ?>
+    <div class="col-md-4 col-sm-6">
+      <div class="card shadow-sm h-100">
+        <div class="position-relative">
+          <img src="<?= base_url('uploads/products/'.$item->image); ?>" class="card-img-top img-fluid fixed-image" alt="<?= $item->name ?>">
+          <span class="badge position-absolute top-0 start-0 m-2 px-3 py-2 
+            <?= $item->status === 'Available' ? 'bg-success' : ($item->status === 'On Rent' ? 'bg-warning text-dark' : 'bg-info') ?>">
+            <?= $item->status ?>
+          </span>
         </div>
+        <div class="card-body">
+          <h6 class="card-title mb-1"><?= $item->product_name ?></h6>
+          <p class="text-muted small mb-2"><?= $item->category ?> | ID: <?= $item->product_id ?></p>
+          <div class="fw-bold">₹ <?= number_format($item->price, 2) ?></div>
+        </div>
+      </div>
     </div>
-
-  <!-- Scripts -->
-   <Script>
-
-    // Sidebar Toggle Logic
-    const sidebar = document.getElementById("sidebar");
-    const dashboardWrapper = document.getElementById("dashboardWrapper");
-    const overlay = document.getElementById("overlay");
-    const toggleSidebarBtn = document.getElementById("toggleSidebar");
-
-    if (toggleSidebarBtn) {
-      toggleSidebarBtn.addEventListener("click", function() {
-        sidebar.classList.toggle("collapsed");
-        dashboardWrapper.classList.toggle("sidebar-collapsed");
-        dashboardWrapper.classList.toggle("sidebar-expanded");
-        // For mobile, show overlay if sidebar is open
-        if (window.innerWidth <= 768) {
-          if (sidebar.classList.contains("collapsed")) {
-            sidebar.classList.remove("show-mobile");
-            if (overlay) overlay.classList.remove("show");
-          } else {
-            sidebar.classList.add("show-mobile");
-            if (overlay) overlay.classList.add("show");
-          }
-        }
-      });
-    }
-
-    // Hide sidebar on overlay click (mobile)
-    if (overlay) {
-      overlay.addEventListener("click", function() {
-        sidebar.classList.remove("show-mobile");
-        overlay.classList.remove("show");
-      });
-    }
-
-    // Responsive auto-collapse for desktop
-    function autoCollapseSidebar() {
-      if (window.innerWidth < 1200) {
-        sidebar.classList.add("collapsed");
-        dashboardWrapper.classList.add("sidebar-collapsed");
-        dashboardWrapper.classList.remove("sidebar-expanded");
-      } else {
-        sidebar.classList.remove("collapsed");
-        dashboardWrapper.classList.remove("sidebar-collapsed");
-        dashboardWrapper.classList.add("sidebar-expanded");
-      }
-    }
-    window.addEventListener("resize", autoCollapseSidebar);
-    window.addEventListener("load", autoCollapseSidebar);
-
-    // Toggle Sidebar Submenus (Slide Open/Close)
-    window.toggleSubMenu = function(el) {
-      el.classList.toggle('active');
-      const submenu = el.nextElementSibling;
-      submenu.classList.toggle('show');
-    }
-  </script>
-
-  <script>
-const priceInput = document.getElementById('price');
-const quantityInput = document.getElementById('quantity');
-const totalInput = document.getElementById('total');
-const statusSelect = document.getElementById('status');
-const overlay = document.getElementById('statusOverlay');
-
-function updateTotal() {
-  const price = parseFloat(priceInput.value) || 0;
-  const qty = parseInt(quantityInput.value) || 0;
-  totalInput.value = (price * qty).toFixed(2);
-}
-
-priceInput.addEventListener('input', updateTotal);
-quantityInput.addEventListener('input', updateTotal);
-
-statusSelect.addEventListener('change', () => {
-  const status = statusSelect.value;
-  if (status === "Out of Stock" || status === "On Rent") {
-    overlay.style.display = "block";
-    overlay.textContent = "Out of Stock";
-  } else {
-    overlay.style.display = "none";
-  }
-});
-
-function previewImage(event) {
-  const preview = document.getElementById('preview');
-  const box = document.getElementById('imagePreviewBox');
-  preview.src = URL.createObjectURL(event.target.files[0]);
-  box.style.display = "block";
-}
-
-document.getElementById('addStockForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  alert('Stock item added successfully!');
-  this.reset();
-  document.getElementById('imagePreviewBox').style.display = "none";
-  overlay.style.display = "none";
-  updateTotal();
-});
-
-updateTotal();
-</script>
-
-
-</body>
-</html>
-
-
-
-
-
-
-
+  <?php endforeach; ?>
+</div>

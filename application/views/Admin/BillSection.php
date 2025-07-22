@@ -23,20 +23,25 @@
 
         .form-section-title {
             font-weight: 700;
-            color: #901e49;
+            color: #a86d01ff;
             margin-top: 1rem;
             margin-bottom: 0.5rem;
         }
 
         .btn-yellow {
-            background-color: #ffc107;
+            background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
+            color: #000;
+            font-weight: 600;
+        }
+        .btn-yellow:hover {
+            background: linear-gradient(90deg, #e2a93eff, #f7c872ff, #e1aa46ff);
             color: #000;
             font-weight: 600;
         }
 
         .btn-outline-gray {
             border: 1px solid #ccc;
-            color: #333;
+            color: black;
         }
     </style>
 
@@ -87,22 +92,27 @@
                                 <label>Staff:</label>
                                 <input type="text" class="form-control" placeholder="Enter Staff Name" id="staffInput" name="staff">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label>Date & Time:</label>
                                 <input type="datetime-local" class="form-control" name="datetime">
                             </div>
-                            <div class="col-md-4">
+
+                            <div class="col-md-3">
+                                <label>Return Date</label>
+                                <input type="datetime-local" class="form-control" name="datetime">
+                            </div>
+                            <div class="col-md-3">
+                                <br>
                                 <label>CGST %:</label>
                                <input type="number" name="cgst" id="cgst" value="1.5" step="0.1" onchange="updateTotalAmount()" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <br>
                                 <label>SGST %:</label>
                                <input type="number" name="sgst" id="sgst" value="1.5" step="0.1" onchange="updateTotalAmount()" />
 
                             </div>
                         </div>
-
-    
 
 
                         <h6 class="form-section-title">Items</h6>
@@ -146,10 +156,7 @@
                                         </tbody>
                             </table>
                                         <input type="hidden" id="totalAmountField" name="total_amount"  />
-
-
-                                    
-                                
+ 
                         </div>
 
                         <button class="btn btn-yellow mb-3" onclick="addRow()" type="button">Add Item</button>
@@ -256,7 +263,7 @@ printItemsHTML += `<tr><td>${index + 1}</td><td>${item}</td><td>${qty}</td><td>$
 
             const newWindow = window.open('', '_blank');
             newWindow.document.write(`<!DOCTYPE html><html><head><title>Print</title></head><body>
-                <h3 style="text-align:center">Kavita's Shop - Mahalaxmi Collection</h3>
+                <h3 style="text-align:center">House of Fashion</h3>
                 <p>Bill No: ${billNo}<br>Date & Time: ${date}<br>Staff: ${waiter}</p>
                 <table border="1" cellspacing="0" cellpadding="6" style="width:100%; text-align:center;">
                     <thead><tr><th>Sr.</th><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>

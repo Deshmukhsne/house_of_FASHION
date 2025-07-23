@@ -9,14 +9,19 @@ class Product_model extends CI_Model {
     }
 
     public function insert_product($data) {
-        return $this->db->insert('products', $data);
+    return $this->db->insert('products', $data);
     }
+    
 
     public function delete_product($id) {
         return $this->db->where('id', $id)->delete('products');
     }
-      public function get_all_products() {
-        // If you just want products
-        return $this->db->get('products')->result();
-    }
+     public function get_all_products() {
+    $this->db->select('products.*, categories.name as category_name');
+    $this->db->from('products');
+    $this->db->join('categories', 'products.category_id = categories.id');
+    $query = $this->db->get();
+    return $query->result();
+}
+
 }

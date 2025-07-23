@@ -89,7 +89,7 @@
 
   <!-- Search Filter -->
   <div class="mb-3">
-    <input type="text" id="searchInput" onkeyup="filterTable()" class="form-control" placeholder="Search by customer name...">
+    <input type="text" id="searchInput" onkeyup="filterTable()" class="form-control" placeholder="Search by customer, product, or status...">
   </div>
 
 
@@ -115,7 +115,7 @@
 
             <div class="col-md-6 ">
               <label>Category</label>
-              <select class="form-select" id="orderCategory" required>
+              <select class="form-select" id="orderCategory" required onchange="populateProducts()">
                 <option selected disabled>Select Category</option>
                 <option value="Gown">Gown</option>
                 <option value="Saree">Saree</option>
@@ -123,19 +123,17 @@
                 <option value="Sherwani">Sherwani</option>
                 <option value="Accessories">Accessories</option>
               </select>
-          </div>
+            </div>
             <div class="col-md-6">
               <label>Product</label>
-              <select class="form-select" id="productSelect" required>
+              <select class="form-select" id="productSelect" required onchange="updateForm()">
                 <option value="">Select</option>
-                <option data-price="500" data-photo="https://5.imimg.com/data5/SELLER/Default/2020/11/BB/ZB/QN/80075047/designer-gown.jpeg" data-id="gown">Red Designer Gown</option>
-                <option data-price="300" data-photo="https://cdn.rajwadi.com/image/cache/data-2024/graceful-beige-heavy-embroidered-groom-sherwani-set-59169-800x1100.jpg" data-id="sherwani">Royal Sherwani</option>
               </select>
             </div>
           
             <div class="col-md-6">
               <label>Product Image</label><br>
-              <img id="productImage" src="https://i.pinimg.com/736x/85/55/d2/8555d25bcc4788c780a250c2000fe5fa.jpg" style="max-width: 120px; max-height: 150px; object-fit: cover;" class="border p-1">
+              <img id="productImage" src="https://paaneriindia.com/cdn/shop/files/3407.jpg?v=1720518038" style="max-width: 120px; max-height: 150px; object-fit: cover;" class="border p-1">
             </div>
 
             <div class="col-md-6">
@@ -163,6 +161,8 @@
               <select class="form-select" id="status">
                 <option>Rented</option>
                 <option>Returned</option>
+                <option>Defected</option>
+                <option>Dry Cleaning</option>
               </select>
             </div>
 
@@ -192,6 +192,7 @@
           <th>Customer</th>
           <th>Product</th>
           <th>Image</th>
+          <th>Category</th>
           <th>Days</th>
           <th>Issue</th>
           <th>Return</th>
@@ -202,41 +203,14 @@
         </tr>
       </thead>
       <tbody id="ordersTable">
-        <tr>
-          <td>1</td>
-          <td>Priya Sharma</td>
-          <td>Red Designer Gown</td>
-          <td><img src="https://5.imimg.com/data5/SELLER/Default/2020/11/BB/ZB/QN/80075047/designer-gown.jpeg" class="order-img-thumb" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal(this.src)" style="max-width: 50px; cursor: pointer;"></td>
-          <td>3</td>
-          <td>2025-07-22</td>
-          <td>2025-07-25</td>
-          <td>₹1500</td>
-          <td>1 times</td>
-          <td>Rented</td>
-          <td>
-            <button class="btn btn-sm btn-primary" onclick="openEditModal(this)">Edit</button>
-            <button class="btn btn-sm btn-danger" onclick="confirmDelete()">Delete</button>
-          </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Rahul Mehta</td>
-          <td>Royal Sherwani</td>
-          <td><img src="https://cdn.rajwadi.com/image/cache/data-2024/graceful-beige-heavy-embroidered-groom-sherwani-set-59169-800x1100.jpg" class="order-img-thumb" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal(this.src)" style="max-width: 50px; cursor: pointer;"></td>
-          <td>2</td>
-          <td>2025-07-21</td>
-          <td>2025-07-23</td>
-          <td>₹600</td>
-          <td>1 times</td>
-          <td>Returned</td>
-          <td>
-            <button class="btn btn-sm btn-primary" onclick="openEditModal(this)">Edit</button>
-            <button class="btn btn-sm btn-danger" onclick="confirmDelete()">Delete</button>
-          </td>
-        </tr>
+        <!-- Orders will be rendered here by JS -->
       </tbody>
     </table>
   </div>
+  <!-- Pagination -->
+  <nav>
+    <ul class="pagination justify-content-center" id="ordersPagination"></ul>
+  </nav>
   <!-- Image View Modal -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -290,75 +264,232 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const productSelect = document.getElementById('productSelect');
-    const totalDays = document.getElementById('totalDays');
-    const totalPrice = document.getElementById('totalPrice');
-    const issueDate = document.getElementById('issueDate');
-    const returnDate = document.getElementById('returnDate');
-    const productImage = document.getElementById('productImage');
-
-    const counts = {
-      gown: 1,
-      sherwani: 1
+    // Product data by category
+    const productsByCategory = {
+      Gown: [
+        { name: 'Red Designer Gown', price: 500, photo: 'https://5.imimg.com/data5/SELLER/Default/2020/11/BB/ZB/QN/80075047/designer-gown.jpeg', id: 'gown' }
+      ],
+      Saree: [
+        { name: 'Blue Silk Saree', price: 400, photo: 'https://i.pinimg.com/originals/7d/7e/7d7e7d7e7d7e7d7e7d7e7d7e7d7e7d7e.jpg', id: 'saree' }
+      ],
+      Lehenga: [
+        { name: 'Bridal Lehenga', price: 800, photo: 'https://i.pinimg.com/originals/2a/2b/2a2b2a2b2a2b2a2b2a2b2a2b2a2b2a2b.jpg', id: 'lehenga' }
+      ],
+      Sherwani: [
+        { name: 'Royal Sherwani', price: 300, photo: 'https://cdn.rajwadi.com/image/cache/data-2024/graceful-beige-heavy-embroidered-groom-sherwani-set-59169-800x1100.jpg', id: 'sherwani' }
+      ],
+      Accessories: [
+        { name: 'Golden Clutch', price: 100, photo: 'https://i.pinimg.com/originals/3c/3d/3c3d3c3d3c3d3c3d3c3d3c3d3c3d3c3d.jpg', id: 'accessory' }
+      ]
     };
 
+    // Orders data (initial)
+    let orders = [
+      {
+        customer: 'Priya Sharma',
+        product: 'Red Designer Gown',
+        category: 'Gown',
+        photo: 'https://5.imimg.com/data5/SELLER/Default/2020/11/BB/ZB/QN/80075047/designer-gown.jpeg',
+        days: 3,
+        issue: '2025-07-22',
+        ret: '2025-07-25',
+        price: 1500,
+        rented: 1,
+        status: 'Rented'
+      },
+      {
+        customer: 'Rahul Mehta',
+        product: 'Royal Sherwani',
+        category: 'Sherwani',
+        photo: 'https://cdn.rajwadi.com/image/cache/data-2024/graceful-beige-heavy-embroidered-groom-sherwani-set-59169-800x1100.jpg',
+        days: 2,
+        issue: '2025-07-21',
+        ret: '2025-07-23',
+        price: 600,
+        rented: 1,
+        status: 'Returned'
+      }
+    ];
+    let filteredOrders = [...orders];
+    let currentCategory = 'All';
+    let currentPage = 1;
+    const pageSize = 10;
+
+    // Populate products based on category
+    function populateProducts() {
+      const cat = document.getElementById('orderCategory').value;
+      const productSelect = document.getElementById('productSelect');
+      productSelect.innerHTML = '<option value="">Select</option>';
+      if (productsByCategory[cat]) {
+        productsByCategory[cat].forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.name;
+          opt.textContent = p.name;
+          opt.setAttribute('data-price', p.price);
+          opt.setAttribute('data-photo', p.photo);
+          opt.setAttribute('data-id', p.id);
+          productSelect.appendChild(opt);
+        });
+      }
+      updateForm();
+    }
+
+    // Update form fields (image, price, return date)
     function updateForm() {
+      const productSelect = document.getElementById('productSelect');
+      const totalDays = document.getElementById('totalDays');
+      const totalPrice = document.getElementById('totalPrice');
+      const issueDate = document.getElementById('issueDate');
+      const returnDate = document.getElementById('returnDate');
+      const productImage = document.getElementById('productImage');
       const selected = productSelect.selectedOptions[0];
-      const price = selected.getAttribute('data-price') || 0;
+      const price = selected ? selected.getAttribute('data-price') || 0 : 0;
       const days = parseInt(totalDays.value) || 0;
       totalPrice.value = (price * days).toFixed(2);
-
       const issue = new Date(issueDate.value);
       if (!isNaN(issue)) {
         issue.setDate(issue.getDate() + days);
         returnDate.value = issue.toISOString().split('T')[0];
       }
-
-      const photoSrc = selected.getAttribute('data-photo');
+      const photoSrc = selected ? selected.getAttribute('data-photo') : '';
       if (photoSrc) productImage.src = photoSrc;
     }
 
-    productSelect.addEventListener('change', updateForm);
-    totalDays.addEventListener('input', updateForm);
-    issueDate.addEventListener('change', updateForm);
+    document.getElementById('productSelect').addEventListener('change', updateForm);
+    document.getElementById('totalDays').addEventListener('input', updateForm);
+    document.getElementById('issueDate').addEventListener('change', updateForm);
 
+    // Confirm order creation
     function confirmOrder() {
       const customer = document.getElementById('customerName').value;
+      const category = document.getElementById('orderCategory').value;
+      const productSelect = document.getElementById('productSelect');
       const selected = productSelect.selectedOptions[0];
-      const productName = selected.text;
+      if (!selected) return false;
+      const productName = selected.value;
       const photo = selected.getAttribute('data-photo');
-      const days = totalDays.value;
-      const issue = issueDate.value;
-      const ret = returnDate.value;
-      const price = totalPrice.value;
+      const days = document.getElementById('totalDays').value;
+      const issue = document.getElementById('issueDate').value;
+      const ret = document.getElementById('returnDate').value;
+      const price = document.getElementById('totalPrice').value;
       const status = document.getElementById('status').value;
-      const productId = selected.getAttribute('data-id');
-
-      const rentedCount = ++counts[productId];
-
-      const table = document.getElementById('ordersTable');
-      const rowCount = table.rows.length + 1;
-      const newRow = `<tr>
-        <td>${rowCount}</td>
-        <td>${customer}</td>
-        <td>${productName}</td>
-        <td><img src="${photo}"></td>
-        <td>${days}</td>
-        <td>${issue}</td>
-        <td>${ret}</td>
-        <td>₹${price}</td>
-        <td>${rentedCount} times</td>
-        <td>${status}</td>
-        <td>
-          <button class="btn btn-sm btn-primary">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="confirmDelete()">Delete</button>
-        </td>
-      </tr>`;
-      table.insertAdjacentHTML('beforeend', newRow);
-
+      // Find or set rented count
+      let rented = 1;
+      const match = orders.find(o => o.product === productName && o.customer === customer);
+      if (match) rented = match.rented + 1;
+      orders.push({
+        customer,
+        product: productName,
+        category,
+        photo,
+        days,
+        issue,
+        ret,
+        price,
+        rented,
+        status
+      });
       Swal.fire('Success!', 'Rental Order Created!', 'success');
+      filterAndRender();
       return false;
     }
+
+    // Unified search and category filter
+    function filterAndRender() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      filteredOrders = orders.filter(order => {
+        const matchCategory = (currentCategory === 'All' || order.category === currentCategory);
+        const matchSearch =
+          order.customer.toLowerCase().includes(search) ||
+          order.product.toLowerCase().includes(search) ||
+          order.status.toLowerCase().includes(search);
+        return matchCategory && matchSearch;
+      });
+      currentPage = 1;
+      renderOrders();
+    }
+
+    function filterByCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.category-option').forEach(el => el.classList.remove('active'));
+      document.querySelector('.category-option[onclick*="' + cat + '"]').classList.add('active');
+      filterAndRender();
+    }
+
+    function filterTable() {
+      filterAndRender();
+    }
+
+    // Render orders with pagination
+    function renderOrders() {
+      const table = document.getElementById('ordersTable');
+      table.innerHTML = '';
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageOrders = filteredOrders.slice(start, end);
+      pageOrders.forEach((order, idx) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${start + idx + 1}</td>
+          <td>${order.customer}</td>
+          <td>${order.product}</td>
+          <td><img src="${order.photo}" class="order-img-thumb" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('${order.photo}')" style="max-width: 50px; cursor: pointer;"></td>
+          <td>${order.category}</td>
+          <td>${order.days}</td>
+          <td>${order.issue}</td>
+          <td>${order.ret}</td>
+          <td>₹${order.price}</td>
+          <td>${order.rented} times</td>
+          <td>${order.status}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="openEditModal(this)">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="confirmDelete(${start + idx})">Delete</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+      renderPagination();
+    }
+
+    function renderPagination() {
+      const totalPages = Math.ceil(filteredOrders.length / pageSize);
+      const pag = document.getElementById('ordersPagination');
+      pag.innerHTML = '';
+      if (totalPages <= 1) return;
+      for (let i = 1; i <= totalPages; i++) {
+        const li = document.createElement('li');
+        li.className = 'page-item' + (i === currentPage ? ' active' : '');
+        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        li.addEventListener('click', function(e) {
+          e.preventDefault();
+          currentPage = i;
+          renderOrders();
+        });
+        pag.appendChild(li);
+      }
+    }
+
+    // Delete order
+    function confirmDelete(idx) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'This order will be deleted!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          orders.splice(idx, 1);
+          filterAndRender();
+          Swal.fire('Deleted!', 'Order has been deleted.', 'success');
+        }
+      });
+    }
+
+    // On page load
+    window.onload = function() {
+      filterAndRender();
+    };
 
     function confirmDelete() {
       Swal.fire({
@@ -374,14 +505,7 @@
       });
     }
 
-    function filterTable() {
-      const input = document.getElementById("searchInput").value.toLowerCase();
-      const rows = document.querySelectorAll("#ordersTable tr");
-      rows.forEach(row => {
-        const customer = row.cells[1].textContent.toLowerCase();
-        row.style.display = customer.includes(input) ? "" : "none";
-      });
-    }
+    // filterTable is now handled by filterAndRender (searches customer, product, status, case-insensitive)
 
     function downloadPDF() {
       Swal.fire('PDF Download', 'PDF export logic goes here.', 'info');
@@ -419,29 +543,25 @@
 
     <!-- edit button -->
      <script>
+  // Edit modal logic
+  let editOrderIdx = null;
   function openEditModal(button) {
     const row = button.closest("tr");
-    const statusCell = row.cells[9]; 
-    const currentStatus = statusCell.textContent;
-
-    document.getElementById("editRowIndex").value = row.rowIndex;
-    document.getElementById("editStatus").value = currentStatus;
-
-    // Show modal
+    const idx = row.rowIndex - 1 + (currentPage - 1) * pageSize;
+    editOrderIdx = idx;
+    document.getElementById("editRowIndex").value = idx;
+    document.getElementById("editStatus").value = orders[idx].status;
     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
     editModal.show();
   }
-
   function saveEdit() {
-    const rowIndex = document.getElementById("editRowIndex").value;
+    const idx = editOrderIdx;
     const newStatus = document.getElementById("editStatus").value;
-
-    const table = document.getElementById("ordersTable");
-    const row = table.rows[rowIndex - 1]; // Adjust for 0-index
-
-    row.cells[9].textContent = newStatus;
-
-    Swal.fire('Updated!', 'Order status has been updated.', 'success');
+    if (orders[idx]) {
+      orders[idx].status = newStatus;
+      filterAndRender();
+      Swal.fire('Updated!', 'Order status has been updated.', 'success');
+    }
     const modalEl = document.getElementById('editModal');
     const modal = bootstrap.Modal.getInstance(modalEl);
     modal.hide();

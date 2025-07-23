@@ -15,6 +15,4 @@ class InvoiceModel extends CI_Model {
     return $this->db->get('invoices')->result();  // should return array of objects
 }
 
-
-
 }

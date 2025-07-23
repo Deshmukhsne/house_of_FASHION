@@ -86,9 +86,13 @@
                <div class="container mt-5">
     <div class="card shadow">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>Product Inventory</h5>
-            <button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#addProductModal">Add New Product</button>
-        </div>
+    <h5>Product Inventory</h5>
+    <div>
+        <button class="btn btn-gold me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
+        <button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
+    </div>
+</div>
+
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-6">
@@ -103,74 +107,96 @@
                     </select>
                 </div>
             </div>
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-    <?php foreach ($products as $product): ?>
+            <table class="table table-bordered mt-3">
+    <thead>
     <tr>
-        <td><?= $product->name ?></td>
-        <td><?= $product->category ?></td>
-        <td><?= $product->stock ?></td>
-        <td>
-            <span class="status-badge 
-                <?= $product->status == 'Available' ? 'status-available' : ($product->status == 'Rented' ? 'status-rented' : 'status-dryclean') ?>">
-                <?= $product->status ?>
-            </span>
-        </td>
-        <td>
-            <a href="<?= base_url('product/edit/' . $product->id) ?>" class="btn btn-sm btn-primary">Edit</a>
-            <a href="<?= base_url('product/delete/' . $product->id) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this product?')">Delete</a>
-        </td>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Stock</th>
+        <th>Status</th>
+        <th>Actions</th>
     </tr>
-    <?php endforeach; ?>
-</tbody>
+    </thead>
+    <tbody>
+    <?php foreach ($products as $product): ?>
+        <tr>
+            <td><?php if (!empty($product->image) && file_exists($product->image)): ?>
+    <img src="<?= base_url($product->image) ?>" height="60" />
+<?php else: ?>
+    <span>No Image</span>
+<?php endif; ?>
 
-            </table>
+</td>
+            <td><?= $product->name ?></td>
+            <td><?= $product->category_name ?></td>
+            <td><?= $product->stock ?></td>
+            <td><span class="status-badge <?= $product->status == 'Available' ? 'status-available' : ($product->status == 'Rented' ? 'status-rented' : 'status-dryclean') ?>"><?= $product->status ?></span></td>
+            <td>
+                <a href="<?= base_url('ProductController/edit_product/' . $product->id) ?>" class="btn btn-sm btn-primary">Edit</a>
+                <a href="<?= base_url('ProductController/delete_product/' . $product->id) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
         </div>
     </div>
 </div>
 
-<!-- Modal: Add Product -->
+<!-- ✅ Keep This Modal Only -->
 <div class="modal fade" id="addProductModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="<?= base_url('ProductController/add_product') ?>" enctype="multipart/form-data">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" name="name" class="form-control mb-2" placeholder="Product Name" required>
+        <select name="category_id" class="form-select mb-2" required>
+  <option value="">Select Category</option>
+  <?php foreach ($categories as $cat): ?>
+    <option value="<?= $cat->id ?>"><?= $cat->name ?></option>
+  <?php endforeach; ?>
+</select>
+
+        <input type="number" name="stock" class="form-control mb-2" placeholder="Stock Quantity" required>
+        <select name="status" class="form-select mb-2">
+          <option value="Available">Available</option>
+          <option value="Rented">Rented</option>
+          <option value="In Dry Clean">In Dry Clean</option>
+        </select>
+        <input type="file" name="image" class="form-control mb-2" required>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-gold" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
     <div class="modal-dialog">
-        <form class="modal-content">
+        <form class="modal-content" method="post" action="<?= base_url('ProductController/add_category') ?>">
             <div class="modal-header">
-                <h5 class="modal-title">Add New Product</h5>
+                <h5 class="modal-title">Add Category</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <input type="text" class="form-control mb-2" placeholder="Product Name" required>
-                <input type="text" class="form-control mb-2" placeholder="Category">
-                <input type="number" class="form-control mb-2" placeholder="Stock Quantity">
-                <select class="form-select mb-2">
-                    <option value="Available">Available</option>
-                    <option value="Rented">Rented</option>
-                    <option value="In Dry Clean">In Dry Clean</option>
-                </select>
+                <input type="text" name="name" class="form-control mb-2" placeholder="Category Name" required>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-gold" type="submit">Save Product</button>
+                <button class="btn btn-gold" type="submit">Add Category</button>
             </div>
         </form>
     </div>
 </div>
-            </div>
-        </div>
-    </div>
-
-    </div>
-    </div>
-    </div>
-
    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -192,23 +218,7 @@
             });
         }
     </script>
-    <form class="modal-content" method="post" action="<?= base_url('product/add') ?>">
-    <div class="modal-body">
-        <input type="text" name="name" class="form-control mb-2" placeholder="Product Name" required>
-        <input type="text" name="category" class="form-control mb-2" placeholder="Category">
-        <input type="number" name="stock" class="form-control mb-2" placeholder="Stock Quantity">
-        <select name="status" class="form-select mb-2">
-            <option value="Available">Available</option>
-            <option value="Rented">Rented</option>
-            <option value="In Dry Clean">In Dry Clean</option>
-        </select>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-gold" type="submit">Save Product</button>
-    </div>
-</form>
-
+    
 </body>
 
 </html>

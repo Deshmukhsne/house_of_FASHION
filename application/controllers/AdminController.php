@@ -164,5 +164,23 @@ class AdminController extends CI_Controller
         $this->load->view('Admin/BillSection');
     }
 
+    public function ProductInventory() {
+         $this->load->model('Product_model');
+
+    $data['products'] = $this->Product_model->get_all_products();
+        $this->load->view('Admin/product_inventory', $data);
+    }
+ 
+    public function AddCategory() {
+        $this->load->view('Admin/add_category');
+    }
+    
+      public function BillHistory() {
+        $this->load->view('Admin/BillHistory');
+    }
+    public function DailyReport() {
+       
+        $this->load->view('Admin/DailyReport', $data);
+    }
 }
 

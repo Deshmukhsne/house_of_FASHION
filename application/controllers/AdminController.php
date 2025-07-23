@@ -37,7 +37,10 @@ class AdminController extends CI_Controller
         $this->load->view("CommonLinks");
     }
 
-    // ✅ Only one dashboard() method
+    public function Orders() {
+        $this->load->view('Admin/Orders');
+    }
+
     public function Dashboard() {
         if (!$this->session->userdata('username')) {
             redirect('AdminController/Login');

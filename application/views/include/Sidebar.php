@@ -273,22 +273,23 @@
                     </a>
                 </li>
 
-                <!-- Services -->
+                <!-- Stock -->
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
-                        <i class="bi bi-box me-2"></i>
-                        <span class="ms-1">Stock</span>
-                    </a>
-                    <div class="collapse" id="billingSubmenu">
+                    <a href="#" class="sidebar-link dropdown-toggle collapsed" data-bs-toggle="collapse"
+   data-bs-target="#stockSubmenu" aria-expanded="false" style="font-size: 20px;">
+    <i class="bi bi-box me-2"></i>
+    <span class="ms-1">Stock</span>
+</a>
+                    <div class="collapse" id="stockSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="#" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/AddCategory" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
                                     <i class="bi bi-file-earmark-plus"></i>
                                     <span class="ms-1">Add Category</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/ProductInventory" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
                                     <i class="bi bi-clock-history"></i>
                                     <span class="ms-1">Add Product</span>
                                 </a>
@@ -302,16 +303,16 @@
 
 
                     </a>
-                    <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                    <a href="#" class="sidebar-link" id="customers-link" style="font-size: 20px;">
                         <i class="bi bi-people"></i>
                         <span class="ms-1">Customers</span>
                     </a>
               
-                    <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                    <a href="#" class="sidebar-link" id="orders-link" style="font-size: 20px;">
                         <i class="bi bi-cart-check me-2"></i>
                         <span class="ms-1">Orders</span>
                     </a>
-                      <a href="#" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                      <a href="#" class="sidebar-link" id="dry-link" style="font-size: 20px;">
                         <i class="bi bi-droplet-half me-2"></i>
                         <span class="ms-1">Dry Cleaning</span>
                     </a>
@@ -327,13 +328,13 @@
                     <div class="collapse" id="billingSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="http://localhost/Mahalaxmi/AdminController/BillSection" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
+                                <a href="#" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
                                     <i class="bi bi-file-earmark-plus"></i>
                                     <span class="ms-1">Bill Section</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="http://localhost/Mahalaxmi/AdminController/BillHistory" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
+                                <a href="#" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
                                     <i class="bi bi-clock-history"></i>
                                     <span class="ms-1">Bill History</span>
                                 </a>
@@ -352,21 +353,13 @@
                     <div class="collapse" id="reportsSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-<<<<<<< HEAD
                                 <a href="#" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
-=======
-                                <a href="" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
->>>>>>> f1e21c029597b79f073ba86c971f0ebf37f70edc
                                     <i class="bi bi-calendar-day"></i>
                                     <span class="ms-1">Daily Report</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-<<<<<<< HEAD
                                 <a href="#" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
-=======
-                                <a href="" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
->>>>>>> f1e21c029597b79f073ba86c971f0ebf37f70edc
                                     <i class="bi bi-calendar2-month"></i>
                                     <span class="ms-1">Monthly Report</span>
                                 </a>
@@ -387,15 +380,13 @@
                     </a>
                 <!-- Profile -->
                 <li class="sidebar-item">
-<<<<<<< HEAD
+
                     <a href="http://localhost/House_Of_Fashion/AdminController/Profile" class="sidebar-link" id="profile-link" style="font-size: 20px;">
-=======
-<<<<<<< HEAD
+
                     <a href="#" class="sidebar-link" id="profile-link" style="font-size: 20px;">
-=======
+
                     <a href="" class="sidebar-link" id="profile-link" style="font-size: 20px;">
->>>>>>> f1e21c029597b79f073ba86c971f0ebf37f70edc
->>>>>>> 5830dd37af624a3d1de65811a4256778cdab4722
+
                         <i class="bi bi-person-fill"></i>
                         <span class="ms-1">Profile</span>
                     </a>

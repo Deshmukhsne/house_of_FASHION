@@ -185,5 +185,11 @@ $this->load->view('Admin/product_inventory', $data);
     public function AddCategory() {
         $this->load->view('Admin/add_category');
     }
+    public function DailyReport() {
+        $this->load->view('Admin/dailyreport');
+    }
+    public function MonthlyReport() {
+        $this->load->view('Admin/monthlyreport');
+    }
 }
 

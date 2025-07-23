@@ -121,20 +121,37 @@
     <tbody>
     <?php foreach ($products as $product): ?>
         <tr>
-            <td><?php if (!empty($product->image) && file_exists($product->image)): ?>
-    <img src="<?= base_url($product->image) ?>" height="60" />
+            <td>
+<?php if (!empty($product->image) && file_exists($product->image)): ?>
+    <img src="<?= base_url($product->image) ?>" height="60" onclick="openImageModal('<?= base_url($product->image) ?>')" style="cursor:pointer;" />
 <?php else: ?>
     <span>No Image</span>
 <?php endif; ?>
-
 </td>
+
             <td><?= $product->name ?></td>
             <td><?= $product->category_name ?></td>
             <td><?= $product->stock ?></td>
             <td><span class="status-badge <?= $product->status == 'Available' ? 'status-available' : ($product->status == 'Rented' ? 'status-rented' : 'status-dryclean') ?>"><?= $product->status ?></span></td>
             <td>
-                <a href="<?= base_url('ProductController/edit_product/' . $product->id) ?>" class="btn btn-sm btn-primary">Edit</a>
+             <button type="button" class="btn btn-sm btn-outline-primary"
+    onclick='openEditModal(<?= json_encode([
+        "id" => $product->id,
+        "name" => $product->name,
+        "stock" => $product->stock ?? 0,
+        "status" => $product->status ?? "",
+        "category_id" => $product->category_id,
+        "image" => $product->image
+    ]) ?>)'>
+    Edit
+</button>
+
+
+
+
+
                 <a href="<?= base_url('ProductController/delete_product/' . $product->id) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a>
+
             </td>
         </tr>
     <?php endforeach; ?>
@@ -197,7 +214,83 @@
         </form>
     </div>
 </div>
-   
+   <!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 320px;">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <img id="modalImage" src="" style="width: 300px; height: 300px; object-fit: contain;" />
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" action="<?= base_url('ProductController/update_product') ?>" enctype="multipart/form-data">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Hidden ID -->
+          <input type="hidden" name="product_id" id="edit_product_id">
+           <input type="hidden" name="existing_image" value="<?= $product->image ?>">
+          <!-- Name -->
+          <div class="mb-3">
+            <label>Product Name</label>
+            <input type="text" class="form-control" name="name" id="edit_product_name">
+          </div>
+
+          <!-- Category -->
+          <!-- Category -->
+<div class="mb-3">
+    <label>Category</label>
+    <select class="form-select" name="category_id" id="edit_product_category">
+        <option value="">Select Category</option>
+        <?php foreach ($categories as $cat): ?>
+            <option value="<?= $cat->id ?>"><?= $cat->name ?></option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
+
+          <!-- Stock -->
+          <div class="mb-3">
+            <label>Stock</label>
+            <input type="number" class="form-control" name="stock" id="edit_product_stock">
+          </div>
+
+          <!-- Status -->
+          <div class="mb-3">
+            <label>Status</label>
+            <select class="form-select" name="status" id="edit_product_status">
+              <option value="Available">Available</option>
+              <option value="Rented">Rented</option>
+              <option value="In Dry Clean">In Dry Clean</option>
+            </select>
+          </div>
+
+          <!-- Current Image -->
+          <div class="mb-3">
+            <label>Current Image</label><br>
+            <img id="edit_product_image_preview" src="" alt="Current Product Image" width="100" class="border rounded mb-2">
+          </div>
+
+          <!-- New Image -->
+          <div class="mb-3">
+            <label>Change Image</label>
+            <input type="file" class="form-control" name="image">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Update Product</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -218,7 +311,40 @@
             });
         }
     </script>
-    
+<?php if ($this->session->flashdata('success')): ?>
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '<?= $this->session->flashdata('success') ?>',
+        confirmButtonColor: '#FFD27F'
+    });
+</script>
+<?php endif; ?>
+
+<script>
+function openImageModal(src) {
+    document.getElementById('modalImage').src = src;
+    var myModal = new bootstrap.Modal(document.getElementById('imageModal'));
+    myModal.show();
+}
+</script>
+<script>
+function openEditModal(product) {
+    document.getElementById('edit_product_id').value = product.id;
+    document.getElementById('edit_product_name').value = product.name;
+   document.getElementById('edit_product_category').value = product.category_id;
+
+    document.getElementById('edit_product_stock').value = product.stock;
+    document.getElementById('edit_product_status').value = product.status;
+
+    document.getElementById('edit_product_image_preview').src = '<?= base_url("uploads/") ?>' + product.image;
+
+    var myModal = new bootstrap.Modal(document.getElementById('editProductModal'));
+    myModal.show();
+}
+</script>
+ 
 </body>
 
 </html>

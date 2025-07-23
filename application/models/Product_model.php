@@ -23,5 +23,17 @@ class Product_model extends CI_Model {
     $query = $this->db->get();
     return $query->result();
 }
+public function get_product_by_id($id) {
+    $this->db->select('products.*, categories.name as category_name');
+    $this->db->from('products');
+    $this->db->join('categories', 'products.category_id = categories.id');
+    $this->db->where('products.id', $id);
+    return $this->db->get()->row();
+}
+
+public function update_product($id, $data) {
+    $this->db->where('id', $id);
+    return $this->db->update('products', $data);
+}
 
 }

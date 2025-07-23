@@ -36,6 +36,11 @@ class AdminController extends CI_Controller
     public function CommonLinks() {
         $this->load->view("CommonLinks");
     }
+    
+         public function DryCleaning(){
+         $this->load->view('Admin/DryCleaning');
+ 
+    }
 
     // ✅ Only one dashboard() method
     public function Dashboard() {

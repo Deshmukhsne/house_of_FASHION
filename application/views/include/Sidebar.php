@@ -275,13 +275,12 @@
 
                 <!-- Stock -->
                 <li class="sidebar-item">
-                    <a href="http://localhost/House_Of_Fashion/AdminController/ProductInventory" class="sidebar-link dropdown-toggle collapsed" data-bs-toggle="collapse"
-   data-bs-target="#stockSubmenu" aria-expanded="false" style="font-size: 20px;">
+  <a href="http://localhost/House_Of_Fashion/AdminController/ProductInventory" class="sidebar-link" style="font-size: 20px;">
     <i class="bi bi-box me-2"></i>
     <span class="ms-1">Stock</span>
-</a>
-                   
-                </li>
+  </a>
+</li>
+
                 <!-- Services -->
                 <li class="sidebar-item">
                     
@@ -297,27 +296,29 @@
                         <i class="bi bi-cart-check me-2"></i>
                         <span class="ms-1">Orders</span>
                     </a>
-                      <a href="#" class="sidebar-link" id="dry-link" style="font-size: 20px;">
-                        <i class="bi bi-droplet-half me-2"></i>
-                        <span class="ms-1">Dry Cleaning</span>
-                    </a>
-                     <div class="collapse" id="drySubmenu">
-                        <ul class="nav flex-column ms-3">
-                            <li class="nav-item">
-                                <a href="http://localhost/House_Of_Fashion/AdminController/AddCategory" class="sidebar-link" id="drysection-link" style="font-size: 18px;">
-                                    <i class="bi bi-file-earmark-plus"></i>
-                                    <span class="ms-1"> Give to  Drycleaning</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="http://localhost/House_Of_Fashion/AdminController/ProductInventory" class="sidebar-link" id="dryhistory-link" style="font-size: 18px;">
-                                    <i class="bi bi-clock-history"></i>
-                                    <span class="ms-1">Status</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+                     <li class="sidebar-item">
+  <a class="sidebar-link collapsed" data-bs-toggle="collapse" href="#drySubmenu" role="button" aria-expanded="false" aria-controls="drySubmenu" style="font-size: 20px;">
+    <i class="bi bi-droplet-half me-2"></i>
+    <span class="ms-1">Dry Cleaning</span>
+  </a>
+
+  <div class="collapse" id="drySubmenu">
+    <ul class="nav flex-column ms-3">
+      <li class="nav-item">
+        <a href="#" class="sidebar-link" style="font-size: 18px;">
+          <i class="bi bi-file-earmark-plus"></i>
+          <span class="ms-1">Give to Drycleaning</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="sidebar-link" style="font-size: 18px;">
+          <i class="bi bi-clock-history"></i>
+          <span class="ms-1">Status</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</li>
 
                 <!-- Billing -->
                 <li class="sidebar-item">
@@ -354,13 +355,13 @@
                     <div class="collapse" id="reportsSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="#" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/DailyReport" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
                                     <i class="bi bi-calendar-day"></i>
                                     <span class="ms-1">Daily Report</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/MonthlyReport" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
                                     <i class="bi bi-calendar2-month"></i>
                                     <span class="ms-1">Monthly Report</span>
                                 </a>

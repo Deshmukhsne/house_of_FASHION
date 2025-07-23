@@ -41,6 +41,15 @@ class AdminController extends CI_Controller
          $this->load->view('Admin/DryCleaning');
  
     }
+     public function DryCleaning_Forward(){
+         $this->load->view('Admin/DryCleaning_Forward');
+ 
+    }
+    public function DryCleaning_Status(){
+         $this->load->view('Admin/DryCleaning_Status');
+ 
+    }
+
 
     // ✅ Only one dashboard() method
     public function Dashboard() {
@@ -166,5 +175,15 @@ class AdminController extends CI_Controller
         $this->load->view('Admin/BillSection');
     }
 
+    public function ProductInventory() {
+         $this->load->model('Product_model');
+
+    $data['products'] = $this->Product_model->get_all_products();
+$this->load->view('Admin/product_inventory', $data);
+    }
+ 
+    public function AddCategory() {
+        $this->load->view('Admin/add_category');
+    }
 }
 

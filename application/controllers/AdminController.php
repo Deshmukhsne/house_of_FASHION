@@ -216,6 +216,13 @@ class AdminController extends CI_Controller
     public function MonthlyReport() {
         $this->load->view('Admin/monthlyreport');
     }
-  
+  public function Profile()
+  {
+    $this->load->view('Admin/Admin_Profile');
+  }
+  public function Customer()
+  {
+    $this->load->view('customers/Customer');
+  }
 }
 

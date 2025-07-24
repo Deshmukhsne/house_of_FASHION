@@ -436,6 +436,29 @@ document.getElementById('logout-btn').addEventListener('click', function (e) {
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- Bootstrap 5 JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.querySelectorAll('.sidebar-link[data-bs-toggle="collapse"]').forEach(link => {
+    const submenuId = link.getAttribute('href');
+    const submenu = document.querySelector(submenuId);
+
+    if (!submenu) return;
+
+    link.addEventListener('dblclick', function (e) {
+      e.preventDefault(); // Prevent default anchor behavior
+
+      const bsCollapse = bootstrap.Collapse.getOrCreateInstance(submenu, {
+        toggle: false
+      });
+
+      bsCollapse.hide(); // Force close on double-click
+    });
+  });
+</script>
+
+
 
 </body>
 

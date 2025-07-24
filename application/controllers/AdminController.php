@@ -36,8 +36,25 @@ class AdminController extends CI_Controller
     public function CommonLinks() {
         $this->load->view("CommonLinks");
     }
+    
+         public function DryCleaning(){
+         $this->load->view('Admin/DryCleaning');
+ 
+    }
+     public function DryCleaning_Forward(){
+         $this->load->view('Admin/DryCleaning_Forward');
+ 
+    }
+    public function DryCleaning_Status(){
+         $this->load->view('Admin/DryCleaning_Status');
+ 
+    }
 
-    // ✅ Only one dashboard() method
+
+    public function Orders() {
+        $this->load->view('Admin/Orders');
+    }
+
     public function Dashboard() {
         if (!$this->session->userdata('username')) {
             redirect('AdminController/Login');
@@ -165,17 +182,22 @@ class AdminController extends CI_Controller
          $this->load->model('Product_model');
 
     $data['products'] = $this->Product_model->get_all_products();
-$this->load->view('Admin/product_inventory', $data);
+        $this->load->view('Admin/product_inventory', $data);
     }
  
     public function AddCategory() {
         $this->load->view('Admin/add_category');
     }
-    public function DailyReport() {
+    
+      public function BillHistory() {
+        $this->load->view('Admin/BillHistory');
+    }
+       public function DailyReport() {
         $this->load->view('Admin/dailyreport');
     }
     public function MonthlyReport() {
         $this->load->view('Admin/monthlyreport');
     }
+  
 }
 

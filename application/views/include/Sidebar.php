@@ -275,50 +275,48 @@
 
                 <!-- Stock -->
                 <li class="sidebar-item">
-  <a href="http://localhost/House_Of_Fashion/AdminController/ProductInventory" class="sidebar-link" style="font-size: 20px;">
-    <i class="bi bi-box me-2"></i>
-    <span class="ms-1">Stock</span>
-  </a>
-</li>
+                    <a href="http://localhost/House_Of_Fashion/AdminController/ProductInventory" class="sidebar-link" style="font-size: 20px;">
+                        <i class="bi bi-box me-2"></i>
+                        <span class="ms-1">Stock</span>
+                    </a>
+                    </li>
 
                 <!-- Services -->
                 <li class="sidebar-item">
-                    
-
-
+                
                     </a>
                     <a href="#" class="sidebar-link" id="customers-link" style="font-size: 20px;">
                         <i class="bi bi-people"></i>
                         <span class="ms-1">Customers</span>
                     </a>
               
-                    <a href="#" class="sidebar-link" id="orders-link" style="font-size: 20px;">
+                    <a href="http://localhost/House_Of_Fashion/AdminController/Orders" class="sidebar-link" id="orders-link" style="font-size: 20px;">
                         <i class="bi bi-cart-check me-2"></i>
                         <span class="ms-1">Orders</span>
                     </a>
                      <li class="sidebar-item">
-  <a class="sidebar-link collapsed" data-bs-toggle="collapse" href="#drySubmenu" role="button" aria-expanded="false" aria-controls="drySubmenu" style="font-size: 20px;">
-    <i class="bi bi-droplet-half me-2"></i>
-    <span class="ms-1">Dry Cleaning</span>
-  </a>
+                        <a class="sidebar-link collapsed" data-bs-toggle="collapse" href="#drySubmenu" role="button" aria-expanded="false" aria-controls="drySubmenu" style="font-size: 20px;">
+                            <i class="bi bi-droplet-half me-2"></i>
+                            <span class="ms-1">Dry Cleaning</span>
+                        </a>
 
-  <div class="collapse" id="drySubmenu">
-    <ul class="nav flex-column ms-3">
-      <li class="nav-item">
-        <a href="#" class="sidebar-link" style="font-size: 18px;">
-          <i class="bi bi-file-earmark-plus"></i>
-          <span class="ms-1">Give to Drycleaning</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="sidebar-link" style="font-size: 18px;">
-          <i class="bi bi-clock-history"></i>
-          <span class="ms-1">Status</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-</li>
+                        <div class="collapse" id="drySubmenu">
+                            <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/DryCleaning_Forward" class="sidebar-link" style="font-size: 18px;">
+                                <i class="bi bi-file-earmark-plus"></i>
+                                <span class="ms-1">Give to Drycleaning</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/DryCleaning_Status" class="sidebar-link" style="font-size: 18px;">
+                                <i class="bi bi-clock-history"></i>
+                                <span class="ms-1">Status</span>
+                                </a>
+                            </li>
+                            </ul>
+                        </div>
+                        </li>
 
                 <!-- Billing -->
                 <li class="sidebar-item">
@@ -330,13 +328,13 @@
                     <div class="collapse" id="billingSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="#" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/Billing" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
                                     <i class="bi bi-file-earmark-plus"></i>
                                     <span class="ms-1">Bill Section</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
+                                <a href="BillHistory" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
                                     <i class="bi bi-clock-history"></i>
                                     <span class="ms-1">Bill History</span>
                                 </a>
@@ -376,7 +374,7 @@
                         </ul>
                     </div>
                 </li>
-                <a href="<?= base_url('AdminController/StaffManagement') ?>" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                <a href="http://localhost/House_Of_Fashion/AdminController/StaffManagement" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
                         <i class="bi-person-lines-fill"></i>
                         <span class="ms-1">Staff Management</span>
                     </a>
@@ -385,9 +383,6 @@
 
                     <a href="http://localhost/House_Of_Fashion/AdminController/Profile" class="sidebar-link" id="profile-link" style="font-size: 20px;">
 
-                    <a href="#" class="sidebar-link" id="profile-link" style="font-size: 20px;">
-
-                    <a href="" class="sidebar-link" id="profile-link" style="font-size: 20px;">
 
                         <i class="bi bi-person-fill"></i>
                         <span class="ms-1">Profile</span>

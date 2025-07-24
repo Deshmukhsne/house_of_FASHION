@@ -54,3 +54,14 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['dashboard'] ='AdminController/dashboard';
 
+$route['customers'] = 'CustomerController/index';
+
+$route['customers/add'] = 'CustomerController/addCustomer';
+
+$route['customers/edit/(:num)'] = 'CustomerController/editCustomer/$1';
+
+
+
+
+$route['customers/delete/(:num)'] = 'CustomerController/delete/$1';
+$route['customers/getCustomer/(:num)'] = 'CustomerController/getCustomer/$1';

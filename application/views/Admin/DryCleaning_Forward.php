@@ -59,7 +59,7 @@
 
 /* === Button === */
 .btn-warning {
-  background-color: #f9a825;
+  background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
   border: none;
   color: #000;
   padding: 10px 30px;
@@ -70,7 +70,7 @@
 }
 
 .btn-warning:hover {
-  background-color: #f57f17;
+      background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
   color: #fff;
   transform: translateY(-2px);
 }
@@ -194,6 +194,32 @@
             });
         }
     </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.getElementById("cleaningForm").addEventListener("submit", function (e) {
+    e.preventDefault(); // Stop actual form submission
+
+    // Show SweetAlert popup
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: 'Dress forwarded to cleaning!',
+      confirmButtonColor: '#f9a825'
+    });
+
+    // Optionally reset the form
+    this.reset();
+  });
+</script>
+
+
+
+
+
+
+
+
 </body>
 
 </html>

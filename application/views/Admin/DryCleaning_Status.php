@@ -16,6 +16,25 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <style>
+
+      .container{
+              overflow:auto;
+             }
+        h2.section-heading {
+            background-color: #000;
+            color: #FFD700;
+            padding: 7px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 400;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: fadeZoom 1s ease-in-out;
+            font-size: 2rem;
+        }
+  
+    </style>
+
 </head>
 
 <body>
@@ -33,7 +52,8 @@
             
 <!-- Dress Cleaning Status Table -->
 <div class="container mt-5 p-4 bg-light rounded shadow">
-  <h2 class="text-center mb-4">Dress Cleaning Status</h2>
+  <h2 class=" section-heading mb-4">Dress Cleaning Status</h2>
+ 
 
   <table class="table table-bordered table-striped">
     <thead class="table-dark">
@@ -55,16 +75,19 @@
         <td>2025-07-23</td>
         <td>2025-07-26</td>
         <td>1500.00</td>
-        <td class="text-warning">In Cleaning</td>
+        <td class="text-warning">
+         <select name="status" class="form-select" required>
+                  <option value="">-- Select Status --</option>
+                  <option>Forwarded</option>
+                  <option>In Cleaning</option>
+                  <option>Returned</option>
+          </select>
+        </td>
       </tr>
       <!-- You can loop through database records here -->
     </tbody>
   </table>
 </div>
-
-
-
-
 
 
             </div>

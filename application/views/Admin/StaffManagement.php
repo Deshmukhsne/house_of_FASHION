@@ -23,7 +23,7 @@
         }
 
         .btn-gold {
-            background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
+            background: linear-gradient(90deg, #B37B16 0%, #FFD27F 100%);
             color: #000;
             font-weight: 600;
         }

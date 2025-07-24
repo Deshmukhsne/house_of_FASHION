@@ -29,7 +29,7 @@
         }
 
         .btn-yellow {
-            background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
+            background: linear-gradient(90deg, #B37B16 0%, #FFD27F 100%);
             color: #000;
             font-weight: 600;
         }
@@ -89,8 +89,8 @@
                                 <input type="text" class="form-control" id="customerName" placeholder="Enter Customer Name" name="customer_name">
                             </div>
                             <div class="col-md-6">
-                                <label>Staff:</label>
-                                <input type="text" class="form-control" placeholder="Enter Staff Name" id="staffInput" name="staff">
+                                <label>Advance Amount</label>
+                                <input type="text" class="form-control" placeholder="Enter Advance Amount" id="advance" name="advance">
                             </div>
                             <div class="col-md-3">
                                 <label>Date & Time:</label>

@@ -24,10 +24,10 @@
     .golden-btn {
       background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
       color: #000;
-      border: none;
+      font-weight: 600;
     }
     .golden-btn:hover {
-      background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
+      background: linear-gradient(90deg, #e2a93eff, #f7c872ff, #e1aa46ff);
       color: #000;
     }
     .form-control, .form-select {

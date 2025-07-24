@@ -303,13 +303,13 @@
                         <div class="collapse" id="drySubmenu">
                             <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="#" class="sidebar-link" style="font-size: 18px;">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/DryCleaning_Forward" class="sidebar-link" style="font-size: 18px;">
                                 <i class="bi bi-file-earmark-plus"></i>
                                 <span class="ms-1">Give to Drycleaning</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="sidebar-link" style="font-size: 18px;">
+                                <a href="http://localhost/House_Of_Fashion/AdminController/DryCleaning_Status" class="sidebar-link" style="font-size: 18px;">
                                 <i class="bi bi-clock-history"></i>
                                 <span class="ms-1">Status</span>
                                 </a>

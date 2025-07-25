@@ -338,5 +338,6 @@ public function deleteCustomer($id) {
     $this->session->set_flashdata('success', 'Customer deleted successfully.');
     redirect(base_url('AdminController/customers'));
 }
+
 }
 

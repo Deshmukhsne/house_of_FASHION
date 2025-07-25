@@ -285,10 +285,10 @@
                 <li class="sidebar-item">
                 
                     </a>
-                    <a href="#" class="sidebar-link" id="customers-link" style="font-size: 20px;">
-                        <i class="bi bi-people"></i>
-                        <span class="ms-1">Customers</span>
-                    </a>
+                    <a href="<?= base_url('AdminController/Customers') ?>" class="sidebar-link" id="customers-link" style="font-size: 20px;">
+    <i class="bi bi-people"></i>
+    <span class="ms-1">Customers</span>
+</a>
               
                     <a href="http://localhost/House_Of_Fashion/AdminController/Orders" class="sidebar-link" id="orders-link" style="font-size: 20px;">
                         <i class="bi bi-cart-check me-2"></i>

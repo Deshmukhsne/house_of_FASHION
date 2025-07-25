@@ -22,11 +22,11 @@
 
     .form-container {
       background-color:#dadada;
-      padding: 40px;
+      padding: 35px;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       max-width: 900px;
-      margin: 40px auto;
+      margin: 35px auto;
       animation: fadeIn 0.5s ease-in-out;
     }
 
@@ -53,62 +53,6 @@
       
     }
 
-<<<<<<< HEAD
-/* === Button === */
-.btn-warning {
-  background: linear-gradient(90deg, #B37B16 0%, #FFD27F 100%);
-  border: none;
-  color: #000;
-  padding: 10px 30px;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(249, 168, 37, 0.3);
-}
-
-.btn-warning:hover {
-  background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-/* === Success Message === */
-#success-message {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-  padding: 12px;
-  border-radius: 6px;
-  text-align: center;
-  margin-top: 20px;
-  display: none;
-  animation: fadeIn 0.4s ease-in-out;
-}
-
-/* === Animations === */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* === Responsive === */
-@media (max-width: 576px) {
-  .form-container {
-    padding: 20px;
-  }
-
-  .btn-warning {
-    width: 100%;
-  }
-} 
-</style>
-=======
     .form-control:focus, 
     .form-select:focus,
     textarea:focus {
@@ -133,7 +77,6 @@
       color: black;
       transform: translateY(-2px);
     }
->>>>>>> b87983e44f96cc77dc7ed95af63b24fd489a9060
 
   </style>
 
@@ -152,14 +95,23 @@
             <!-- Page Content -->
             <div class="container-fluid p-4">
                <div class="container-fluid p-4">
-        <div class="form-container">
+       <div class="form-container">
           <h2 class="form-title">Forward to Dry Cleaning</h2>
       <form id="cleaningForm" method="post" action="<?= base_url('AdminController/DryCleaning_status') ?>">
-          <!-- <form id="cleaningForm"> -->
+          <!-- <form id="cleaningForm">  -->
             <div class="row g-3">
+    <div class="col-md-6">
+        <input type="text" name="vendor_name" class="form-control" placeholder="Vendor Name" required />
+      </div>
+  <div class="col-md-6">
+        <input type="tel" name="vendor_mobile" class="form-control" placeholder="Vendor Mobile Number" pattern="[0-9]{10}" maxlength="10" required />
+      </div>
+
+
               <div class="col-md-6">
                 <input type="text" name="forward_dress_id" class="form-control" placeholder="Product ID" required />
               </div>
+
               <div class="col-md-6">
                 <input type="date" name="forward_date" class="form-control" value="<?= date('Y-m-d') ?>" required />
               </div>
@@ -182,7 +134,7 @@
                 <button type="submit" class="btn btn-warning px-5">Forward to Cleaning</button>
               </div>
             </div>
-          </form>
+          </form> 
         </div>
       </div>
 
@@ -190,10 +142,7 @@
         </div>
     </div>
 
-    </div>
-    </div>
-    </div>
- 
+   
     
 <script>
   document.getElementById("cleaningForm").addEventListener("submit", function (e) {
@@ -202,7 +151,7 @@
     Swal.fire({
       icon: 'success',
       title: 'Dress Forwarded!',
-      text: 'The dress has been successfully forwarded for cleaning.',
+      text: 'The dress successfully forwarded for cleaning.',
       confirmButtonColor: '#f9a825'
     }).then(() => {
       this.submit(); // Submit the form after alert
@@ -221,6 +170,7 @@
                 sidebar.classList.toggle("collapsed");
             });
         }
+        
 
         if (closeBtn && sidebar) {
             closeBtn.addEventListener("click", function() {

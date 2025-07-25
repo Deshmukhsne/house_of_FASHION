@@ -285,7 +285,7 @@
                 <li class="sidebar-item">
                 
                     </a>
-                    <a href="#" class="sidebar-link" id="customers-link" style="font-size: 20px;">
+                    <a href="http://localhost/House_Of_Fashion/AdminController/Customers" class="sidebar-link" id="customers-link" style="font-size: 20px;">
                         <i class="bi bi-people"></i>
                         <span class="ms-1">Customers</span>
                     </a>

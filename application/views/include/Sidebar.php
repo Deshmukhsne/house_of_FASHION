@@ -34,7 +34,8 @@
         #sidebar {
             width: 280px;
             height: 100vh;
-          background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.9)),url('<?php echo base_url("assets/images/sidebar_bg.jpg"); ?>') no-repeat center center;            color: #fff;
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.9)), url('<?php echo base_url("assets/images/sidebar_bg.jpg"); ?>') no-repeat center center;
+            color: #fff;
             position: sticky;
             top: 0;
             display: flex;
@@ -69,7 +70,7 @@
             font-weight: bold;
             font-size: 1.4rem;
             background: linear-gradient(to bottom, rgb(255, 217, 0), #b8860b);
-            -webkit-background-clip: text;
+            /* -webkit-background-clip: text; */
             -webkit-text-fill-color: transparent;
             display: inline-block;
         }
@@ -94,7 +95,7 @@
             padding: 8px 10px;
 
             margin-bottom: 20px;
-            border-radius: 4px 4px 4px 4px!important;
+            border-radius: 4px 4px 4px 4px !important;
         }
 
         .sidebar-link {
@@ -123,10 +124,7 @@
             z-index: 1;
         }
 
-        .sidebar-link:hover i,
-        .sidebar-link:focus i {
-            /* color: #FFD700; */
-        }
+        */
 
         /* Active Link */
         .sidebar-link.active {
@@ -175,12 +173,12 @@
 
         .sidebar-footer a {
             font-size: 16px;
-            color:  #fac852ff;
+            color: #fac852ff;
         }
 
         .sidebar-footer a:hover {
             background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
-            color:black !important;
+            color: black !important;
             transform: translateX(4px) scale(1.02);
         }
 
@@ -258,14 +256,14 @@
 <body>
     <div class="d-flex">
         <aside id="sidebar" class="sidebar-toggle bg-light">
-            <div class="sidebar-logo"> 
-<img src="<?php echo base_url('assets/images/logo.jpg'); ?>" class="logo-full" alt="Full Logo">
+            <div class="sidebar-logo">
+                <img src="<?php echo base_url('assets/images/logo.jpg'); ?>" class="logo-full" alt="Full Logo">
                 <i class="bi bi-x-lg close-sidebar mt-3"></i>
             </div>
             <!-- Sidebar Navigation -->
             <ul class="sidebar-nav p-0 mt-4" style="font-size: 1.15rem;">
                 <!-- Profile Image & Name -->
-                  <!-- Dashboard -->
+                <!-- Dashboard -->
                 <li class="sidebar-item">
                     <a href="<?= base_url('AdminController/Dashboard') ?>" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
                         <i class="bi bi-house-fill"></i>
@@ -275,48 +273,48 @@
 
                 <!-- Stock -->
                 <li class="sidebar-item">
-                    <a href="http://localhost/House_Of_Fashion/AdminController/ProductInventory" class="sidebar-link" style="font-size: 20px;">
+                    <a href="<?= base_url('AdminController/ProductInventory') ?>" class="sidebar-link" style="font-size: 20px;">
                         <i class="bi bi-box me-2"></i>
                         <span class="ms-1">Stock</span>
                     </a>
-                    </li>
+                </li>
 
                 <!-- Services -->
                 <li class="sidebar-item">
                     </a>
-                    
-                    <a href="http://localhost/House_Of_Fashion/AdminController/Customers" class="sidebar-link" id="customers-link" style="font-size: 20px;">
+
+                    <a href="<?= base_url('AdminController/Customers') ?>" class="sidebar-link" id="customers-link" style="font-size: 20px;">
                         <i class="bi bi-people"></i>
                         <span class="ms-1">Customers</span>
                     </a>
-              
-                    <a href="http://localhost/House_Of_Fashion/AdminController/Orders" class="sidebar-link" id="orders-link" style="font-size: 20px;">
+
+                    <a href="<?= base_url('AdminController/Orders') ?>" class="sidebar-link" id="orders-link" style="font-size: 20px;">
                         <i class="bi bi-cart-check me-2"></i>
                         <span class="ms-1">Orders</span>
                     </a>
-                     <li class="sidebar-item">
-                        <a class="sidebar-link collapsed" data-bs-toggle="collapse" href="#drySubmenu" role="button" aria-expanded="false" aria-controls="drySubmenu" style="font-size: 20px;">
-                            <i class="bi bi-droplet-half me-2"></i>
-                            <span class="ms-1">Dry Cleaning</span>
-                        </a>
+                <li class="sidebar-item">
+                    <a class="sidebar-link collapsed" data-bs-toggle="collapse" href="#drySubmenu" role="button" aria-expanded="false" aria-controls="drySubmenu" style="font-size: 20px;">
+                        <i class="bi bi-droplet-half me-2"></i>
+                        <span class="ms-1">Dry Cleaning</span>
+                    </a>
 
-                        <div class="collapse" id="drySubmenu">
-                            <ul class="nav flex-column ms-3">
+                    <div class="collapse" id="drySubmenu">
+                        <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="http://localhost/House_Of_Fashion/AdminController/DryCleaning_Forward" class="sidebar-link" style="font-size: 18px;">
-                                <i class="bi bi-file-earmark-plus"></i>
-                                <span class="ms-1">Give to Drycleaning</span>
+                                <a href="<?= base_url('AdminController/DryCleaning_Forward') ?>" class="sidebar-link" style="font-size: 18px;">
+                                    <i class="bi bi-file-earmark-plus"></i>
+                                    <span class="ms-1">Give to Drycleaning</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="http://localhost/House_Of_Fashion/AdminController/DryCleaning_Status" class="sidebar-link" style="font-size: 18px;">
-                                <i class="bi bi-clock-history"></i>
-                                <span class="ms-1">Status</span>
+                                <a href="<?= base_url('AdminController/DryCleaning_Status') ?>" class="sidebar-link" style="font-size: 18px;">
+                                    <i class="bi bi-clock-history"></i>
+                                    <span class="ms-1">Status</span>
                                 </a>
                             </li>
-                            </ul>
-                        </div>
-                        </li>
+                        </ul>
+                    </div>
+                </li>
 
                 <!-- Billing -->
                 <li class="sidebar-item">
@@ -328,13 +326,13 @@
                     <div class="collapse" id="billingSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="http://localhost/House_Of_Fashion/AdminController/Billing" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
+                                <a href="<?= base_url('AdminController/Billing') ?>" class="sidebar-link" id="billsection-link" style="font-size: 18px;">
                                     <i class="bi bi-file-earmark-plus"></i>
                                     <span class="ms-1">Bill Section</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="BillHistory" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
+                                <a href="<?= base_url('AdminController/BillHistory') ?>" class="sidebar-link" id="billhistory-link" style="font-size: 18px;">
                                     <i class="bi bi-clock-history"></i>
                                     <span class="ms-1">Bill History</span>
                                 </a>
@@ -353,13 +351,13 @@
                     <div class="collapse" id="reportsSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="http://localhost/House_Of_Fashion/AdminController/DailyReport" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
+                                <a href="<?= base_url('AdminController/DailyReport') ?>" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
                                     <i class="bi bi-calendar-day"></i>
                                     <span class="ms-1">Daily Report</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="http://localhost/House_Of_Fashion/AdminController/MonthlyReport" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
+                                <a href="<?= base_url('AdminController/MonthlyReport') ?>" class="sidebar-link" id="monthlyreport-link" style="font-size: 18px;">
                                     <i class="bi bi-calendar2-month"></i>
                                     <span class="ms-1">Monthly Report</span>
                                 </a>
@@ -374,14 +372,14 @@
                         </ul>
                     </div>
                 </li>
-                <a href="http://localhost/House_Of_Fashion/AdminController/StaffManagement" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
-                        <i class="bi-person-lines-fill"></i>
-                        <span class="ms-1">Staff Management</span>
-                    </a>
+                <a href="<?= base_url('AdminController/StaffManagement') ?>" class="sidebar-link" id="dashboard-link" style="font-size: 20px;">
+                    <i class="bi-person-lines-fill"></i>
+                    <span class="ms-1">Staff Management</span>
+                </a>
                 <!-- Profile -->
                 <li class="sidebar-item">
 
-                    <a href="http://localhost/House_Of_Fashion/AdminController/Profile" class="sidebar-link" id="profile-link" style="font-size: 20px;">
+                    <a href="<?= base_url('AdminController/Profile') ?>" class="sidebar-link" id="profile-link" style="font-size: 20px;">
 
 
                         <i class="bi bi-person-fill"></i>
@@ -394,11 +392,11 @@
             <!-- LOGOUT -->
 
             <div class="sidebar-footer mb-3">
-    <a href="#" id="logout-btn" class="sidebar-link" style="font-size: 16px;">
-        <i class="bi bi-box-arrow-left"></i>
-        <span class="ms-1">Log out</span>
-    </a>
-</div>
+                <a href="#" id="logout-btn" class="sidebar-link" style="font-size: 16px;">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span class="ms-1">Log out</span>
+                </a>
+            </div>
 
 
     </div>
@@ -407,51 +405,51 @@
     </aside>
 
 
-<script>
-document.getElementById('logout-btn').addEventListener('click', function (e) {
-    e.preventDefault();
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
 
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "Do you really want to logout?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, logout',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = "<?= base_url('AdminController/login') ?>";
-        }
-    });
-});
-</script>
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to logout?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, logout',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "<?= base_url('AdminController/login') ?>";
+                }
+            });
+        });
+    </script>
 
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Bootstrap 5 JS and Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.querySelectorAll('.sidebar-link[data-bs-toggle="collapse"]').forEach(link => {
-    const submenuId = link.getAttribute('href');
-    const submenu = document.querySelector(submenuId);
+    <!-- Bootstrap 5 JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.sidebar-link[data-bs-toggle="collapse"]').forEach(link => {
+            const submenuId = link.getAttribute('href');
+            const submenu = document.querySelector(submenuId);
 
-    if (!submenu) return;
+            if (!submenu) return;
 
-    link.addEventListener('dblclick', function (e) {
-      e.preventDefault(); // Prevent default anchor behavior
+            link.addEventListener('dblclick', function(e) {
+                e.preventDefault(); // Prevent default anchor behavior
 
-      const bsCollapse = bootstrap.Collapse.getOrCreateInstance(submenu, {
-        toggle: false
-      });
+                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(submenu, {
+                    toggle: false
+                });
 
-      bsCollapse.hide(); // Force close on double-click
-    });
-  });
-</script>
+                bsCollapse.hide(); // Force close on double-click
+            });
+        });
+    </script>
 
 
 

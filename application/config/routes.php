@@ -55,6 +55,11 @@ $route['translate_uri_dashes'] = FALSE;
 $route['dashboard'] ='AdminController/dashboard';
 
 $route['customers'] = 'AdminController/customers';
-$route['customers/add'] = 'AdminController/addCustomer';
-$route['customers/edit/(:num)'] = 'AdminController/editCustomer/$1';
-$route['customers/delete/(:num)'] = 'AdminController/deleteCustomer/$1';
+
+$route['customers/add'] = 'AdminController/add_customer';
+$route['customers/update'] = 'AdminController/update_customer';
+$route['customers/delete/(:num)'] = 'AdminController/delete_customer/$1';
+$route['customers/get/(:num)'] = 'AdminController/get_customer/$1';
+$route['customers/export_excel'] = 'AdminController/export_excel';
+$route['customers/export_pdf'] = 'AdminController/export_pdf';
+$route['customers/export_pdf'] = 'AdminController/export_pdf_view';

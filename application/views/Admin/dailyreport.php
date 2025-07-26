@@ -75,6 +75,7 @@
     <!-- Stat Cards -->
     <div class="row text-center mb-4">
       <div class="col-md-4 mb-3">
+        
         <div class="stat-box">
           <p class="stat-label mb-1">Total Orders</p>
           <div class="stat-value">120</div>

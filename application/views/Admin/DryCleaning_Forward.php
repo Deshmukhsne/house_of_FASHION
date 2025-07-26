@@ -108,34 +108,9 @@
   }
 } 
 </style>
-=======
-    .form-control:focus, 
-    .form-select:focus,
-    textarea:focus {
-      border-color: #f9a825; 
-      box-shadow: 0 0 6px rgba(249, 168, 37, 0.4);
-      outline:none;
-    }
 
-    .btn-warning {
-      background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
-      border:black;
-      color: #000;
-      padding: 12px 30px;
-      font-weight: 600;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(249, 168, 37, 0.3);
-    }
 
-    .btn-warning:hover {
-      background: linear-gradient(90deg, #FFD27F 0%, #B37B16 100%);
-      color: black;
-      transform: translateY(-2px);
-    }
->>>>>>> b87983e44f96cc77dc7ed95af63b24fd489a9060
 
-  </style>
 
 </head>
 

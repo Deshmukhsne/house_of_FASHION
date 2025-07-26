@@ -29,7 +29,7 @@
         }
 
         .btn-yellow {
-            background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
+            background: linear-gradient(90deg, #B37B16 0%, #FFD27F 100%);
             color: #000;
             font-weight: 600;
         }
@@ -89,8 +89,8 @@
                                 <input type="text" class="form-control" id="customerName" placeholder="Enter Customer Name" name="customer_name">
                             </div>
                             <div class="col-md-6">
-                                <label>Staff:</label>
-                                <input type="text" class="form-control" placeholder="Enter Staff Name" id="staffInput" name="staff">
+                                <label>Advance Amount</label>
+                                <input type="text" class="form-control" placeholder="Enter Advance Amount" id="advance" name="advance">
                             </div>
                             <div class="col-md-3">
                                 <label>Date & Time:</label>
@@ -110,11 +110,8 @@
                                 <br>
                                 <label>SGST %:</label>
                                <input type="number" name="sgst" id="sgst" value="1.5" step="0.1" onchange="updateTotalAmount()" />
-
                             </div>
                         </div>
-
-
                         <h6 class="form-section-title">Items</h6>
                         <div class="table-responsive">
                             <table class="table table-bordered align-middle">
@@ -144,7 +141,6 @@
                                         <td><input type="number" name="items[0][qty]" class="form-control qty" oninput="calculateTotal(this.closest('tr'))"></td>
                                         <td><input type="number" name="items[0][total]" class="form-control total" readonly></td>
                                         <td><input type="number" name="items[0][discount]" class="form-control" oninput="calculateTotal(this.closest('tr'))"></td>
-
                                         <td>
                                             <select name="items[0][payment_mode]" class="form-select">
                                                 <option>Cash</option>
@@ -154,10 +150,9 @@
                                         <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">Remove</button></td>
                                         </tr>
                                         </tbody>
-                            </table>
+                                    </table>
                                         <input type="hidden" id="totalAmountField" name="total_amount"  />
- 
-                        </div>
+                                </div>
 
                         <button class="btn btn-yellow mb-3" onclick="addRow()" type="button">Add Item</button>
 
@@ -294,8 +289,6 @@ printItemsHTML += `<tr><td>${index + 1}</td><td>${item}</td><td>${qty}</td><td>$
     </div>
     </div>
     </div>
-
-   
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

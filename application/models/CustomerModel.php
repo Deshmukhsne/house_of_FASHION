@@ -7,6 +7,7 @@ class CustomerModel extends CI_Model {
         return $this->db->insert('customers', $data);
     }
 
+
     public function update_customer($id, $data) {
         return $this->db->where('id', (int)$id)->update('customers', $data);
     }
@@ -23,13 +24,7 @@ class CustomerModel extends CI_Model {
             $this->db->group_end();
         }
 
-        if (!empty($filter)) {
-            $this->db->where('id_proof_type', $filter);
-        }
-
-        if (!$forExport && $limit !== null && $start !== null) {
-            $this->db->limit($limit, $start);
-        }
+       
 
         $this->db->order_by('id', 'DESC');
         return $this->db->get('customers')->result();

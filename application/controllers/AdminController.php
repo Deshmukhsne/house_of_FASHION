@@ -193,7 +193,7 @@ class AdminController extends CI_Controller
         $this->load->view('Admin/BillHistory');
     }
        public function DailyReport() {
-        $this->load->view('Admin/dailyreport');  // Capital D
+        $this->load->view('Admin/DailyReport');  // Capital D
 
     }
     public function MonthlyReport() {

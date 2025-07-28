@@ -362,4 +362,40 @@ class AdminController extends CI_Controller
         $this->session->set_flashdata('success', 'Customer deleted successfully.');
         redirect(base_url('AdminController/customers'));
     }
+    public function change_password_handler()
+    {
+        $this->load->model('User_model');
+
+        $userId = $this->session->userdata('user_id');
+        $currentPassword = $this->input->post('currentPassword');
+        $newPassword = $this->input->post('newPassword');
+        $confirmPassword = $this->input->post('confirmPassword');
+
+        if ($newPassword !== $confirmPassword) {
+            $this->session->set_flashdata('error', 'New passwords do not match.');
+            redirect('AdminController/change_password');
+            return;
+        }
+
+        $user = $this->User_model->get_user_by_id($userId);
+
+        if ($user) {
+            if (password_verify($currentPassword, $user->password)) {
+                $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+                $this->User_model->update_password($userId, $hashedPassword);
+                $this->session->set_flashdata('success', 'Password updated successfully.');
+            } else {
+                $this->session->set_flashdata('error', 'Current password is incorrect.');
+            }
+        } else {
+            $this->session->set_flashdata('error', 'User not found.');
+        }
+
+        redirect('AdminController/change_password');
+    }
+
+    public function change_password()
+    {
+        $this->load->view('admin/change_password');  // this loads the frontend you provided
+    }
 }

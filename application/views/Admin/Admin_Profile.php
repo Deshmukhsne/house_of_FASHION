@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,58 +6,68 @@
     <title>Billing Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->load->view('CommonLinks'); ?>
-    
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap CSS -->
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
-    .card {
-      border-radius: 15px;
-      background-color: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-    .form-label {
-      font-weight: 600;
-    }
-    .input-group-text {
-      background-color: #fff;
-      border-left: none;
-      cursor: pointer;
-    }
-    .form-control {
-      border-radius: 8px 0 0 8px;
-      border-right: none;
-    }
-    .input-group .form-control:last-child {
-      border-radius: 8px;
-    }
-    .toggle-password i {
-      font-size: 1.2rem;
-    }
-    .btn-gradient {
-      background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
-      border: none;
-      color: white;
-      font-weight: bold;
-      border-radius: 8px;
-      padding: 10px;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-gradient:hover {
-      background: linear-gradient(90deg, #FFD27F, #B37B16, #FFD27F);
-      color: black;
-    }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    .alert {
-      font-size: 14px;
-    }
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+    <style>
+        .card {
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .input-group-text {
+            background-color: #fff;
+            border-left: none;
+            cursor: pointer;
+        }
+
+        .form-control {
+            border-radius: 8px 0 0 8px;
+            border-right: none;
+        }
+
+        .input-group .form-control:last-child {
+            border-radius: 8px;
+        }
+
+        .toggle-password i {
+            font-size: 1.2rem;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(90deg, #FFD27F, #B37B16, #FFD27F);
+            color: black;
+        }
+
+        .alert {
+            font-size: 14px;
+        }
     </style>
-
 </head>
+
 <body>
     <div class="d-flex">
         <!-- Sidebar -->
@@ -72,26 +80,21 @@
 
             <!-- Page Content -->
             <div class="container-fluid p-4">
-                <!-- Page Content -->
-
-            <div class="container-fluid mt-4">
                 <div class="container mt-4">
-
                     <div class="row justify-content-center">
                         <div class="col-md-6 col-sm-12">
                             <div class="card p-4">
                                 <h4 class="text-center mb-4">Change Password</h4>
 
-                                <!-- Flash Message -->
+                                <!-- Flash Messages -->
                                 <?php if ($this->session->flashdata('success')): ?>
                                     <div class="alert alert-success"><?= $this->session->flashdata('success') ?></div>
                                 <?php elseif ($this->session->flashdata('error')): ?>
                                     <div class="alert alert-danger"><?= $this->session->flashdata('error') ?></div>
                                 <?php endif; ?>
 
+                                <!-- Password Form -->
                                 <form id="changePasswordForm" method="POST" action="<?= base_url('AdminController/change_password_handler') ?>">
-
-                                    <!-- Current Password -->
                                     <div class="mb-3">
                                         <label for="currentPassword" class="form-label">Current Password</label>
                                         <div class="input-group">
@@ -102,7 +105,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- New Password -->
                                     <div class="mb-3">
                                         <label for="newPassword" class="form-label">New Password</label>
                                         <div class="input-group">
@@ -113,7 +115,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Confirm Password -->
                                     <div class="mb-3">
                                         <label for="confirmPassword" class="form-label">Confirm Password</label>
                                         <div class="input-group">
@@ -125,8 +126,7 @@
                                     </div>
 
                                     <div class="d-grid">
-                                        <button type="submit" class="btn text- fw-bold" style="background: linear-gradient(90deg, #B37B16, #FFD27F, #B37B16);!important;">Save Changes</button>
-
+                                        <button type="submit" class="btn btn-gradient">Save Changes</button>
                                     </div>
                                 </form>
 
@@ -134,60 +134,42 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
 
-    </div>
-    </div>
-    </div>
-    <!-- Bootstrap & Icons -->
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-                <!-- Password Toggle + Validation -->
-                <script>
-                    function togglePassword(id, iconElement) {
-                        const input = document.getElementById(id);
-                        const icon = iconElement.querySelector('i');
-                        if (input.type === "password") {
-                            input.type = "text";
-                            icon.classList.remove('bi-eye-fill');
-                            icon.classList.add('bi-eye-slash-fill');
-                        } else {
-                            input.type = "password";
-                            icon.classList.remove('bi-eye-slash-fill');
-                            icon.classList.add('bi-eye-fill');
-                        }
-                    }
-
-                    // Simple validation
-                    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
-                        const newPass = document.getElementById('newPassword').value;
-                        const confirmPass = document.getElementById('confirmPassword').value;
-                        const messageBox = document.getElementById('messageBox');
-
-                        if (newPass !== confirmPass) {
-                            e.preventDefault();
-                            messageBox.innerText = "New passwords do not match!";
-                        }
-                    });
-                </script>
-            </div>
-        </div>
-    </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Password Toggle and Validation -->
     <script>
+        function togglePassword(id, iconElement) {
+            const input = document.getElementById(id);
+            const icon = iconElement.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('bi-eye-fill');
+                icon.classList.add('bi-eye-slash-fill');
+            } else {
+                input.type = "password";
+                icon.classList.remove('bi-eye-slash-fill');
+                icon.classList.add('bi-eye-fill');
+            }
+        }
 
-   
+        // Password match validation
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            const messageBox = document.getElementById('messageBox');
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            if (newPass !== confirmPass) {
+                e.preventDefault();
+                messageBox.innerText = "New passwords do not match!";
+            }
+        });
+    </script>
+
+    <!-- Sidebar toggle JS -->
     <script>
-        // Navbar  toggler
         const toggler = document.querySelector(".toggler-btn");
         const closeBtn = document.querySelector(".close-sidebar");
         const sidebar = document.querySelector("#sidebar");
@@ -207,5 +189,3 @@
 </body>
 
 </html>
-
-

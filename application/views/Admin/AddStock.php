@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard - House of Fashion</title>
+  <title>Add Stock</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
+   <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
 
  .btn-gold {

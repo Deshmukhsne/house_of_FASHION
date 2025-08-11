@@ -15,7 +15,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -105,12 +106,8 @@
           <div class="modal-body row g-3">
 
             <div class="col-md-6">
-              <label>Customer</label>
-              <select class="form-select" required id="customerName">
-                <option value="">Select</option>
-                <option>Priya Sharma</option>
-                <option>Rahul Mehta</option>
-              </select>
+              <label>Customer Name</label>
+              <input type="text" class="form-control" id="customerName" placeholder="Enter customer name" required>
             </div>
 
             <div class="col-md-6 ">
@@ -129,6 +126,16 @@
               <select class="form-select" id="productSelect" required onchange="updateForm()">
                 <option value="">Select</option>
               </select>
+            </div>
+
+            <div class="col-md-6">
+              <label>Customer Number</label>
+              <input type="tel" class="form-control" id="customerNumber" placeholder="Enter customer number" pattern="[0-9]{10}" maxlength="10" required>
+            </div>
+
+            <div class="col-md-6">
+              <label>Price (₹)</label>
+              <input type="number" class="form-control" id="orderPrice" placeholder="Enter price per day" min="0" required>
             </div>
           
             <div class="col-md-6">
@@ -342,8 +349,10 @@
       const issueDate = document.getElementById('issueDate');
       const returnDate = document.getElementById('returnDate');
       const productImage = document.getElementById('productImage');
+      const orderPrice = document.getElementById('orderPrice');
       const selected = productSelect.selectedOptions[0];
-      const price = selected ? selected.getAttribute('data-price') || 0 : 0;
+      // Use entered price if available, else fallback to product price
+      let price = orderPrice && orderPrice.value ? parseFloat(orderPrice.value) : (selected ? parseFloat(selected.getAttribute('data-price')) || 0 : 0);
       const days = parseInt(totalDays.value) || 0;
       totalPrice.value = (price * days).toFixed(2);
       const issue = new Date(issueDate.value);
@@ -355,13 +364,18 @@
       if (photoSrc) productImage.src = photoSrc;
     }
 
+    // Update total price when price or days changes
+    document.getElementById('orderPrice').addEventListener('input', updateForm);
+
     document.getElementById('productSelect').addEventListener('change', updateForm);
     document.getElementById('totalDays').addEventListener('input', updateForm);
     document.getElementById('issueDate').addEventListener('change', updateForm);
 
     // Confirm order creation
     function confirmOrder() {
-      const customer = document.getElementById('customerName').value;
+  const customer = document.getElementById('customerName').value;
+  const customerNumber = document.getElementById('customerNumber').value;
+  const orderPrice = document.getElementById('orderPrice').value;
       const category = document.getElementById('orderCategory').value;
       const productSelect = document.getElementById('productSelect');
       const selected = productSelect.selectedOptions[0];
@@ -379,13 +393,14 @@
       if (match) rented = match.rented + 1;
       orders.push({
         customer,
+        customerNumber,
         product: productName,
         category,
         photo,
         days,
         issue,
         ret,
-        price,
+        price: orderPrice || price,
         rented,
         status
       });
@@ -429,6 +444,16 @@
       const pageOrders = filteredOrders.slice(start, end);
       pageOrders.forEach((order, idx) => {
         const row = document.createElement('tr');
+        let actionButtons = `
+          <button class=\"btn btn-sm btn-primary\" onclick=\"openEditModal(this)\">Edit</button>
+          <button class=\"btn btn-sm btn-danger\" onclick=\"confirmDelete(${start + idx})\">Delete</button>
+        `;
+        // Add Dry Clean link if status is 'Returned'
+        if (order.status === 'Returned') {
+          actionButtons = `
+            <a class=\"btn btn-sm btn-warning\" href=\"<?= base_url('AdminController/DryCleaning_Forward') ?>\">Dry Clean</a> ` + actionButtons;
+        }
+        // Hide Dry Clean button if status is 'Dry Cleaning'
         row.innerHTML = `
           <td>${start + idx + 1}</td>
           <td>${order.customer}</td>
@@ -442,8 +467,7 @@
           <td>${order.rented} times</td>
           <td>${order.status}</td>
           <td>
-            <button class="btn btn-sm btn-primary" onclick="openEditModal(this)">Edit</button>
-            <button class="btn btn-sm btn-danger" onclick="confirmDelete(${start + idx})">Delete</button>
+            ${(order.status === 'Dry Cleaning') ? '' : actionButtons}
           </td>
         `;
         table.appendChild(row);

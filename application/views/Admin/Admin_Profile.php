@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Billing Dashboard</title>
+    <title></title>Profile
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->load->view('CommonLinks'); ?>
 
@@ -16,7 +16,8 @@
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+    <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         .card {
             border-radius: 15px;

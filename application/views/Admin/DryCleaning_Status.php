@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Billing Dashboard</title>
+    <title></title>Dress Cleaning Status</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->load->view('CommonLinks'); ?>
     <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>">
@@ -15,7 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+   <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
 
       .container{

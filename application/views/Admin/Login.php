@@ -6,6 +6,8 @@
   <title>Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -173,7 +175,7 @@
 
     <div class="left">
       <div class="form-wrapper content">
-        <img src="<?php echo base_url('assets/images/logo-small.jpg');  ?>"  alt="Company Logo" class="company-logo">
+        <img src="<?php echo base_url('assets/images/favicon.png');  ?>"  alt="Company Logo" class="company-logo">
 
         <h1>Login</h1>
         <?php if ($this->session->flashdata('error')): ?>
@@ -210,7 +212,7 @@
         <img src="https://i.pinimg.com/736x/c3/b1/72/c3b1723db547ae91a3c3cb8f26b66142.jpg" alt="Slide 4">
       </div>
       <div class="company-info">
-        <img src="<?php echo base_url('assets/images/logo-small.jpg'); ?>" style="height:70px"; alt="Company Logo" class="company-logo">
+        <img src="<?php echo base_url('assets/images/favicon.png'); ?>" style="height:70px"; alt="Company Logo" class="company-logo">
         <h3>House of Fashion</h3>
         <p>Empowering teams with modern tools to collaborate, plan and succeed together.</p>
       </div>

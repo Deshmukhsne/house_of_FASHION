@@ -54,7 +54,7 @@
 
     }
 
-    <<<<<<< HEAD
+    
 
     /* === Button === */
     .btn-warning {
@@ -176,10 +176,9 @@
       </div>
     </div>
   </div>
+  
 
-
-
-  <script>
+ <script>
     document.getElementById("cleaningForm").addEventListener("submit", function(e) {
       e.preventDefault();
 

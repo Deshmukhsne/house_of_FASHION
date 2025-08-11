@@ -4,92 +4,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rental Shop Consent Form</title>
-    <!-- Bootstrap CSS -->
+    <title>Rental Shop Consent Form - House of Fashion</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
-            background: linear-gradient(to right, #4facfe, #00f2fe);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
+            background: #f8f9fa;
+            padding: 30px;
+            font-size: 16px;
         }
 
-        .form-card {
+        .form-container {
             background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            padding: 2rem;
-            max-width: 600px;
-            width: 100%;
+            border: 1px solid #000;
+            padding: 40px;
+            max-width: 900px;
+            margin: auto;
+            color: #000;
+            line-height: 1.6;
+        }
+
+        .shop-header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .shop-header h2 {
+            margin: 0;
+            font-weight: bold;
         }
 
         .form-title {
-            font-weight: bold;
             text-align: center;
-            margin-bottom: 1.5rem;
-            color: #007bff;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
         }
 
-        .form-check-label {
-            font-size: 0.95rem;
+        .signature-block {
+            margin-top: 40px;
+        }
+
+        .signature-line {
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            min-width: 200px;
+            margin-top: 5px;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .form-container {
+                border: none;
+                padding: 0;
+                box-shadow: none;
+            }
+
+            /* Force side-by-side signatures in print */
+            .signature-block {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .signature-block>div {
+                width: 48%;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="form-card mx-auto">
-            <h3 class="form-title">Rental Shop Consent Form</h3>
-            <form>
-                <div class="mb-3">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" class="form-control" placeholder="Enter your full name" required>
-                </div>
+    <div class="form-container">
+        <!-- Shop Name -->
+        <div class="shop-header">
+            <h2>HOUSE OF FASHION</h2>
+            <p>Address: 123 Fashion Street, City, Country<br />
+                Phone: (123) 456-7890 | Email: info@example.com</p>
+        </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Contact Number</label>
-                    <input type="tel" class="form-control" placeholder="Enter your contact number" required>
-                </div>
+        <!-- Agreement Body -->
+        <p>- I __________________________ hereby acknowledge that this Rental Agreement Form (hereinafter referred to as
+            "<strong>Form</strong>") became effective on __________________________.</p>
 
-                <div class="mb-3">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-control" placeholder="Enter your email" required>
-                </div>
+        <p>- I hereby agree to rent the item(s) listed below from __________________________ ("Rental Shop") for the
+            agreed duration and cost.</p>
 
-                <div class="mb-3">
-                    <label class="form-label">Rental Item</label>
-                    <input type="text" class="form-control" placeholder="Enter item name" required>
-                </div>
+        <p>- I acknowledge that I am responsible for the proper care, use, and return of the rented item(s) in the same
+            condition as received, except for normal wear and tear.</p>
 
-                <div class="mb-3">
-                    <label class="form-label">Rental Duration</label>
-                    <input type="text" class="form-control" placeholder="e.g., 3 days, 1 week" required>
-                </div>
+        <p>- I agree to be liable for any damage, loss, or late return of the rented item(s), and will compensate the
+            Rental Shop for repair, replacement, or late fees as applicable.</p>
 
-                <div class="mb-3">
-                    <label class="form-label">Address</label>
-                    <textarea class="form-control" rows="3" placeholder="Enter your address" required></textarea>
-                </div>
+        <p>- I understand that the rental item(s) remain the sole property of the Rental Shop and that I have no
+            ownership rights over them.</p>
 
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="consentCheck" required>
-                    <label class="form-check-label" for="consentCheck">
-                        I hereby agree to the rental shop's terms and conditions, including responsibility for damage, loss, or late returns.
-                    </label>
-                </div>
+        <p>- I agree to follow all usage instructions provided by the Rental Shop and use the rented item(s) only for
+            lawful purposes.</p>
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary px-4">Submit</button>
-                    <button type="reset" class="btn btn-secondary px-4">Reset</button>
-                </div>
-            </form>
+        <p>- I hereby release the Rental Shop from any claims, liabilities, or damages arising from the use of the
+            rented item(s), except where caused by the Rental Shop’s negligence.</p>
+
+        <hr>
+        <!-- Item Details -->
+        <p><strong>ITEM(S) RENTED:</strong> ___________________________________________</p>
+        <p><strong>RENTAL DURATION:</strong> _________________________________________</p>
+        <p><strong>TOTAL COST:</strong> ______________________________________________</p>
+        <hr>
+
+        <!-- Signature Section -->
+        <div class="row signature-block">
+            <div class="col-md-6">
+                <p><strong>RENTAL SHOP</strong></p>
+                <p>Name: <span class="signature-line"></span></p>
+                <p>Signature: <span class="signature-line"></span></p>
+                <p>Date: <span class="signature-line"></span></p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>CUSTOMER</strong></p>
+                <p>Name: <span class="signature-line"></span></p>
+                <p>Signature: <span class="signature-line"></span></p>
+                <p>Date: <span class="signature-line"></span></p>
+            </div>
+        </div>
+
+        <!-- Print Button -->
+        <div class="text-center mt-4 no-print">
+            <button onclick="window.print()" class="btn btn-success px-4">Print Form</button>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -221,9 +221,9 @@ class AdminController extends CI_Controller
     {
         $this->load->view('Admin/BillHistory');
     }
-    public function DailyReport()
+    public function ConsentForm()
     {
-        $this->load->view('Admin/DailyReport');
+        $this->load->view('Admin/consent');
     }
     public function MonthlyReport()
     {
@@ -233,78 +233,10 @@ class AdminController extends CI_Controller
     {
         $this->load->view('Admin/Admin_Profile');
     }
-    public function Customer()
-    {
-        $this->load->view('customers/Customer');
-    }
 
 
 
-    // List Customers with pagination & filters
-    public function customers()
-    {
-        $search = $this->input->get('search');
-        $config['base_url'] = base_url('AdminController/customers');
-        $config['total_rows'] = $this->CustomerModel->count_customers($search); // ✅ fixed method name
 
-
-        $this->load->view('Admin/customers', $data);
-    }
-
-    // Add new customer
-    public function add_customer()
-    {
-        $this->form_validation->set_rules('name', 'Name', 'required');
-        $this->form_validation->set_rules('contact', 'Contact', 'required');
-
-        if ($this->form_validation->run()) {
-            $data = [
-                'name' => $this->input->post('name'),
-                'contact' => $this->input->post('contact'),
-            ];
-            $this->CustomerModel->insert_customer($data);
-            $this->session->set_flashdata('success', 'Customer added successfully!');
-        } else {
-            $this->session->set_flashdata('error', 'Validation failed while adding.');
-        }
-        redirect('customers'); // Use 'AdminController/customers' if no custom route
-    }
-
-    // Update customer
-    public function update_customer()
-    {
-        $this->form_validation->set_rules('name', 'Name', 'required');
-        $this->form_validation->set_rules('contact', 'Contact', 'required');
-
-        if ($this->form_validation->run()) {
-            $id = $this->input->post('id');
-            $data = [
-                'name' => $this->input->post('name'),
-                'contact' => $this->input->post('contact'),
-            ];
-            $this->CustomerModel->update_customer($id, $data);
-            $this->session->set_flashdata('success', 'Customer updated successfully!');
-        } else {
-            $this->session->set_flashdata('error', 'Validation failed while updating.');
-        }
-
-        redirect('customers'); // Use 'AdminController/customers' if no custom route
-    }
-
-    // Delete customer
-    public function delete_customer($id)
-    {
-        $this->CustomerModel->delete_customer($id);
-        $this->session->set_flashdata('success', 'Customer deleted successfully!');
-        redirect('customers');
-    }
-
-    // Get customer by ID (AJAX)
-    public function get_customer($id)
-    {
-        $data = $this->CustomerModel->get_customer_by_id($id);
-        echo json_encode($data);
-    }
 
     // Export to Excel without using library
     public function export_excel()

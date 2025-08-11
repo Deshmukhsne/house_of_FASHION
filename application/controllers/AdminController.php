@@ -13,10 +13,6 @@ class AdminController extends CI_Controller
         $this->load->model('Admin_Model');
         $this->load->model('Product_model');
         $this->load->model('CustomerModel');
-        $this->load->library('pagination');
-        $this->load->library('user_agent'); // For referrer detection
-
-
     }
 
     public function index()
@@ -237,41 +233,26 @@ class AdminController extends CI_Controller
     {
         $this->load->view('Admin/Admin_Profile');
     }
+    public function Customer()
+    {
+        $this->load->view('customers/Customer');
+    }
 
+
+
+    // List Customers with pagination & filters
     public function customers()
     {
         $search = $this->input->get('search');
-        $filter = $this->input->get('filter');
-
         $config['base_url'] = base_url('AdminController/customers');
-        $config['per_page'] = 10;
-        $config['uri_segment'] = 3;
+        $config['total_rows'] = $this->CustomerModel->count_customers($search); // ✅ fixed method name
 
-        $query_array = [];
-        if (!empty($search)) $query_array['search'] = $search;
-        if (!empty($filter)) $query_array['filter'] = $filter;
 
-        if (!empty($query_array)) {
-            $suffix = '?' . http_build_query($query_array);
-            $config['suffix'] = $suffix;
-            $config['first_url'] = $config['base_url'] . $suffix;
-        }
-
-        $config['total_rows'] = $this->CustomerModel->count_customers($search, $filter);
-        $this->pagination->initialize($config);
-
-        $page = ($this->uri->segment(3)) ? (int)$this->uri->segment(3) : 0;
-
-        $data['customers'] = $this->CustomerModel->get_customers($config['per_page'], $page, $search, $filter);
-        $data['pagination'] = $this->pagination->create_links();
-        $data['search'] = $search;
-        $data['filter'] = $filter;
-
-        $this->load->view('Admin/Customers', $data);
+        $this->load->view('Admin/customers', $data);
     }
 
-    // Add Customer
-    public function addCustomer()
+    // Add new customer
+    public function add_customer()
     {
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('contact', 'Contact', 'required');
@@ -280,122 +261,107 @@ class AdminController extends CI_Controller
             $data = [
                 'name' => $this->input->post('name'),
                 'contact' => $this->input->post('contact'),
-                'id_proof_type' => $this->input->post('id_proof_type'),
             ];
-
-            // File Upload
-            if (!empty($_FILES['id_proof']['name'])) {
-                $upload_path = FCPATH . 'uploads/id_proofs/';
-                if (!is_dir($upload_path)) mkdir($upload_path, 0777, true);
-
-                $config['upload_path'] = $upload_path;
-                $config['allowed_types'] = 'jpg|jpeg|png|pdf';
-                $config['max_size'] = 2048;
-
-                $this->load->library('upload', $config);
-
-                if ($this->upload->do_upload('id_proof')) {
-                    $data['id_proof_file'] = $this->upload->data('file_name');
-                } else {
-                    $this->session->set_flashdata('error', $this->upload->display_errors());
-                    redirect(base_url('AdminController/customers'));
-                    return;
-                }
-            }
-
             $this->CustomerModel->insert_customer($data);
-            $this->session->set_flashdata('success', 'Customer added successfully.');
+            $this->session->set_flashdata('success', 'Customer added successfully!');
         } else {
-            $this->session->set_flashdata('error', validation_errors());
+            $this->session->set_flashdata('error', 'Validation failed while adding.');
         }
-
-        redirect(base_url('AdminController/customers'));
+        redirect('customers'); // Use 'AdminController/customers' if no custom route
     }
 
-    // Edit Customer
-    public function editCustomer($id)
+    // Update customer
+    public function update_customer()
     {
-        $referrer = $this->agent->referrer();  // needs user_agent lib loaded
-
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('contact', 'Contact', 'required');
 
         if ($this->form_validation->run()) {
+            $id = $this->input->post('id');
             $data = [
                 'name' => $this->input->post('name'),
                 'contact' => $this->input->post('contact'),
-                'id_proof_type' => $this->input->post('id_proof_type'),
             ];
-
-            if (!empty($_FILES['id_proof']['name'])) {
-                $upload_path = FCPATH . 'uploads/id_proofs/';
-                if (!is_dir($upload_path)) mkdir($upload_path, 0777, true);
-
-                $config['upload_path'] = $upload_path;
-                $config['allowed_types'] = 'jpg|jpeg|png|pdf';
-                $config['max_size'] = 2048;
-
-                $this->load->library('upload', $config);
-
-                if ($this->upload->do_upload('id_proof')) {
-                    $data['id_proof_file'] = $this->upload->data('file_name');
-                } else {
-                    $this->session->set_flashdata('error', $this->upload->display_errors());
-                    redirect($referrer);
-                    return;
-                }
-            }
-
             $this->CustomerModel->update_customer($id, $data);
-            $this->session->set_flashdata('success', 'Customer updated successfully.');
+            $this->session->set_flashdata('success', 'Customer updated successfully!');
         } else {
-            $this->session->set_flashdata('error', validation_errors());
+            $this->session->set_flashdata('error', 'Validation failed while updating.');
         }
 
-        redirect($referrer);
+        redirect('customers'); // Use 'AdminController/customers' if no custom route
     }
 
-    // Delete Customer
-    public function deleteCustomer($id)
+    // Delete customer
+    public function delete_customer($id)
     {
         $this->CustomerModel->delete_customer($id);
-        $this->session->set_flashdata('success', 'Customer deleted successfully.');
-        redirect(base_url('AdminController/customers'));
-    }
-    public function change_password_handler()
-    {
-        $this->load->model('User_model');
-
-        $userId = $this->session->userdata('user_id');
-        $currentPassword = $this->input->post('currentPassword');
-        $newPassword = $this->input->post('newPassword');
-        $confirmPassword = $this->input->post('confirmPassword');
-
-        if ($newPassword !== $confirmPassword) {
-            $this->session->set_flashdata('error', 'New passwords do not match.');
-            redirect('AdminController/change_password');
-            return;
-        }
-
-        $user = $this->User_model->get_user_by_id($userId);
-
-        if ($user) {
-            if (password_verify($currentPassword, $user->password)) {
-                $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-                $this->User_model->update_password($userId, $hashedPassword);
-                $this->session->set_flashdata('success', 'Password updated successfully.');
-            } else {
-                $this->session->set_flashdata('error', 'Current password is incorrect.');
-            }
-        } else {
-            $this->session->set_flashdata('error', 'User not found.');
-        }
-
-        redirect('AdminController/change_password');
+        $this->session->set_flashdata('success', 'Customer deleted successfully!');
+        redirect('customers');
     }
 
-    public function change_password()
+    // Get customer by ID (AJAX)
+    public function get_customer($id)
     {
-        $this->load->view('admin/change_password');  // this loads the frontend you provided
+        $data = $this->CustomerModel->get_customer_by_id($id);
+        echo json_encode($data);
+    }
+
+    // Export to Excel without using library
+    public function export_excel()
+    {
+        $customers = $this->CustomerModel->get_all_customers();
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=customers_" . date('Ymd_His') . ".xls");
+
+        echo "<table border='1'>";
+        echo "<tr><th>ID</th><th>Name</th><th>Contact</th></tr>";
+        foreach ($customers as $cust) {
+            echo "<tr>";
+            echo "<td>{$cust->id}</td>";
+            echo "<td>{$cust->name}</td>";
+            echo "<td>{$cust->contact}</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
+
+    // Export to PDF without library (just outputs HTML with PDF headers)
+    public function export_pdf()
+    {
+        $customers = $this->CustomerModel->get_all_customers();
+
+        $html = '<h2 style="text-align:center;">Customer List</h2>';
+        $html .= '<table border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">';
+        $html .= '<tr style="background-color:#f2f2f2;">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Contact</th>
+                  </tr>';
+
+        foreach ($customers as $cust) {
+            $html .= '<tr>
+                        <td>' . $cust->id . '</td>
+                        <td>' . htmlspecialchars($cust->name) . '</td>
+                        <td>' . htmlspecialchars($cust->contact) . '</td>
+                      </tr>';
+        }
+
+        $html .= '</table>';
+
+        $filename = "customers_" . date('Ymd_His') . ".pdf";
+        header("Content-Type: application/pdf");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Cache-Control: max-age=0");
+
+        echo $html;
+        exit;
+    }
+
+    // View-only PDF version (optional)
+    public function export_pdf_view()
+    {
+        $data['customers'] = $this->CustomerModel->get_all_customers();
+        $this->load->view('admin/export_pdf', $data);
     }
 }

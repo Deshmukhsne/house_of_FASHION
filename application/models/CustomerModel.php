@@ -1,47 +1,57 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class CustomerModel extends CI_Model {
+class CustomerModel extends CI_Model
+{
 
-    public function insert_customer($data) {
+    // Insert new customer
+    public function insert_customer($data)
+    {
         return $this->db->insert('customers', $data);
     }
 
-
-    public function update_customer($id, $data) {
-        return $this->db->where('id', (int)$id)->update('customers', $data);
+    // Update existing customer
+    public function update_customer($id, $data)
+    {
+        return $this->db->where('id', $id)->update('customers', $data);
     }
 
-    public function delete_customer($id) {
-        return $this->db->where('id', (int)$id)->delete('customers');
+    // Delete customer by ID
+    public function delete_customer($id)
+    {
+        return $this->db->delete('customers', ['id' => $id]);
     }
 
-    public function get_customers($limit = null, $start = null, $search = null, $filter = null, $forExport = false) {
+    // Get single customer by ID
+    public function get_customer_by_id($id)
+    {
+        return $this->db->get_where('customers', ['id' => $id])->row();
+    }
+
+    // Get paginated and filtered customers
+    public function get_customers($limit, $offset, $search = '')
+    {
         if (!empty($search)) {
-            $this->db->group_start();
             $this->db->like('name', $search);
             $this->db->or_like('contact', $search);
-            $this->db->group_end();
         }
-
-       
-
         $this->db->order_by('id', 'DESC');
-        return $this->db->get('customers')->result();
+        return $this->db->get('customers', $limit, $offset)->result();
     }
 
-    public function count_customers($search = null, $filter = null) {
+    // Count filtered customers for pagination
+    public function count_customers($search = '')
+    {
         if (!empty($search)) {
-            $this->db->group_start();
             $this->db->like('name', $search);
             $this->db->or_like('contact', $search);
-            $this->db->group_end();
         }
-
-        if (!empty($filter)) {
-            $this->db->where('id_proof_type', $filter);
-        }
-
         return $this->db->count_all_results('customers');
+    }
+
+    // Get all customers (for export)
+    public function get_all_customers()
+    {
+        return $this->db->order_by('id', 'DESC')->get('customers')->result();
     }
 }

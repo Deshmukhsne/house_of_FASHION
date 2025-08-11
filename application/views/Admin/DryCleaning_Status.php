@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title></title>Dress Cleaning Status</title>
+    <title>Dry Cleaning Status</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->load->view('CommonLinks'); ?>
     <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>">

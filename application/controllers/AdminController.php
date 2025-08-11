@@ -296,4 +296,9 @@ class AdminController extends CI_Controller
         $data['customers'] = $this->CustomerModel->get_all_customers();
         $this->load->view('admin/export_pdf', $data);
     }
+
+    public function Report()
+    {
+        $this->load->view('Admin/Report');
+    }
 }

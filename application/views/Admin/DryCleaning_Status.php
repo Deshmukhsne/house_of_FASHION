@@ -8,7 +8,6 @@
 
     <?php $this->load->view('CommonLinks'); ?>
     <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
 
@@ -45,22 +44,30 @@
         .btn-stock:hover {
             background-color: #218838;
         }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-delete:hover {
+            background-color: #b02a37;
+        }
     </style>
 </head>
 
 <body>
 <div class="d-flex">
-    <!-- Sidebar -->
     <?php $this->load->view('include/sidebar'); ?>
-
-    <!-- Main Content Area -->
     <div class="main">
-        <!-- Navbar -->
         <?php $this->load->view('include/navbar'); ?>
 
-        <!-- Page Content -->
         <div class="container-fluid p-4">
-            <!-- Dress Cleaning Status Table -->
             <div class="container mt-5 p-4 bg-light rounded shadow">
                 <h2 class="section-heading mb-4">Dress Cleaning Status</h2>
 
@@ -96,6 +103,7 @@
                         </td>
                         <td>
                             <button class="btn-stock">Add in Stock</button>
+                            <button class="btn-delete">Delete</button>
                         </td>
                     </tr>
                     </tbody>
@@ -107,6 +115,8 @@
 
 <script>
 $(document).ready(function() {
+
+    // ADD TO STOCK
     $("#cleaningTable").on("click", ".btn-stock", function() {
         let row = $(this).closest("tr");
         let productID = row.find("td:eq(0)").text().trim();
@@ -137,7 +147,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "<?= base_url('stock/add') ?>", // Your controller method
+                    url: "<?= base_url('stock/add') ?>",
                     type: "POST",
                     data: {
                         product_id: productID,
@@ -148,13 +158,13 @@ $(document).ready(function() {
                         cleaning_charges: cleaningCharges,
                         status: status
                     },
-                    success: function(response) {
+                    success: function() {
                         Swal.fire({
                             icon: 'success',
                             title: 'Added to Stock',
                             text: `${productName} has been added successfully!`
                         }).then(() => {
-                            location.reload();
+                            row.remove();
                         });
                     },
                     error: function() {
@@ -168,6 +178,48 @@ $(document).ready(function() {
             }
         });
     });
+
+    // DELETE ITEM
+    $("#cleaningTable").on("click", ".btn-delete", function() {
+        let row = $(this).closest("tr");
+        let productID = row.find("td:eq(0)").text().trim();
+        let productName = row.find("td:eq(1)").text().trim();
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Delete Item?',
+            text: `Are you sure you want to delete ${productName}?`,
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, Delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= base_url('drycleaning/delete') ?>",
+                    type: "POST",
+                    data: { product_id: productID },
+                    success: function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted',
+                            text: `${productName} has been deleted.`
+                        }).then(() => {
+                            row.remove();
+                        });
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to delete item.'
+                        });
+                    }
+                });
+            }
+        });
+    });
+
 });
 </script>
 

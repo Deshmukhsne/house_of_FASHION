@@ -13,6 +13,7 @@ class AdminController extends CI_Controller
         $this->load->model('Admin_Model');
         $this->load->model('Product_model');
         $this->load->model('CustomerModel');
+         $this->load->model('DryCleaning_model');
     }
 
     public function index()
@@ -45,30 +46,51 @@ class AdminController extends CI_Controller
         $this->load->view("CommonLinks");
     }
 
-    //Dry cleaning 
-    public function DryCleaning_Forward()
-    {
-        $this->load->view('Admin/DryCleaning_Forward');
-    }
-    public function DryCleaning_Status()
-    {
+     // Dry cleaning
+public function DryCleaning_Forward()
+{
+    $this->load->view('Admin/DryCleaning_Forward');
+}
+
+public function DryCleaning_Status()
+{
+    if ($this->input->server('REQUEST_METHOD') === 'POST') {
+        $data = [
+            'vendor_name'    => $this->input->post('vendor_name'),
+            'vendor_mobile'  => $this->input->post('vendor_mobile'),
+            'forward_date'   => $this->input->post('forward_date'),
+            'return_date'    => $this->input->post('return_date'),
+            'product_name'   => $this->input->post('product_name'),
+            'product_status' => $this->input->post('product_status'),
+            'cleaning_notes' => $this->input->post('cleaning_notes'),
+            'created_at'     => date('Y-m-d H:i:s')
+        ];
+
+        $this->db->insert('drycleaning_status', $data);
+
+        // Redirect with success
+        $this->session->set_flashdata('success', 'Dress forwarded to cleaning successfully.');
+        redirect('AdminController/DryCleaning_Status');
+    } else {
         $this->load->view('Admin/DryCleaning_Status');
-
-        if ($this->input->method() === 'post') {
-            $data = [
-                'product_id'       => $this->input->post('forward_dress_id'),
-                'forward_date'     => $this->input->post('forward_date'),
-                'status'           => $this->input->post('status'),
-                'expected_return'  => $this->input->post('expected_return'),
-                'cleaning_notes'   => $this->input->post('cleaning_notes')
-            ];
-
-            $this->load->database();
-            $this->db->insert('drycleaning_status', $data);
-
-            redirect('AdminController/DryCleaning_Status');
-        }
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function Orders()
     {

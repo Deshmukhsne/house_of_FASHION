@@ -106,6 +106,27 @@
                             <button class="btn-delete">Delete</button>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td>P1001</td>
+                        <td>White-Sherwani</td>
+                        <td>Sherwani</td>
+                        <td>2025-07-23</td>
+                        <td>2025-07-26</td>
+                        <td>1500.00</td>
+                        <td class="text-warning">
+                            <select name="status" class="form-select" required>
+                                <option value="">-- Select Status --</option>
+                                <option>Forwarded</option>
+                                <option>In Cleaning</option>
+                                <option>Returned</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn-stock">Add in Stock</button>
+                            <button class="btn-delete">Delete</button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

@@ -12,7 +12,7 @@ class AdminController extends CI_Controller
         $this->load->model('Login_Model');
         $this->load->model('Admin_Model');
         $this->load->model('Product_model');
-        $this->load->model('CustomerModel');
+
          $this->load->model('DryCleaning_model');
     }
 

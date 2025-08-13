@@ -56,7 +56,7 @@
                     </thead>
                     <tbody>
                     <?php foreach ($drycleaning_data as $item): ?>
-                        <tr>
+                        <tr data-id="<?= $item->id ?>">
                             <td><?= $item->id ?></td>
                             <td><?= $item->vendor_name ?></td>
                             <td><?= $item->vendor_mobile ?></td>
@@ -89,7 +89,7 @@
 <script>
 $(document).ready(function() {
 
-    // Status change save to DB
+    // Update Status
     $("#cleaningTable").on("change", "select[name='status']", function() {
         let recordID = $(this).data("id");
         let newStatus = $(this).val();
@@ -107,11 +107,11 @@ $(document).ready(function() {
         });
     });
 
-    // Add to Stock (only if Returned)
+    // Add to Stock
     $("#cleaningTable").on("click", ".btn-stock", function() {
         let row = $(this).closest("tr");
         let status = row.find("select[name='status']").val();
-        let recordID = row.find("td:eq(0)").text().trim();
+        let recordID = row.data("id");
         let productName = row.find("td:eq(3)").text().trim();
 
         if (status !== "Returned") {
@@ -133,7 +133,7 @@ $(document).ready(function() {
             confirmButtonText: 'Yes, Add'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.post("<?= base_url('stock/add') ?>", { id: recordID }, function() {
+                $.post("<?= base_url('AdminController/AddStock') ?>", { id: recordID }, function() {
                     Swal.fire({
                         icon: 'success',
                         title: 'Added to Stock',
@@ -152,10 +152,10 @@ $(document).ready(function() {
         });
     });
 
-    // Delete record
+    // Delete Record
     $("#cleaningTable").on("click", ".btn-delete", function() {
         let row = $(this).closest("tr");
-        let recordID = row.find("td:eq(0)").text().trim();
+        let recordID = row.data("id");
         let productName = row.find("td:eq(3)").text().trim();
 
         Swal.fire({
@@ -168,7 +168,7 @@ $(document).ready(function() {
             confirmButtonText: 'Yes, Delete'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.post("<?= base_url('drycleaning/delete') ?>", { id: recordID }, function(response) {
+                $.post("<?= base_url('AdminController/delete_drycleaning') ?>", { id: recordID }, function(response) {
                     let res = JSON.parse(response);
                     if (res.success) {
                         Swal.fire({
@@ -185,6 +185,12 @@ $(document).ready(function() {
                             text: 'Failed to delete item.'
                         });
                     }
+                }).fail(function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Server error occurred.'
+                    });
                 });
             }
         });

@@ -6,8 +6,7 @@
     <title>Orders</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->load->view('CommonLinks'); ?>
-    <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/script.js') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -16,7 +15,7 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -61,10 +60,7 @@
   border-bottom: 2px solid #000;
   color: #000;
 }
-
   </style>
-
-
 </head>
 
 <body>
@@ -109,60 +105,70 @@
               <label>Customer Name</label>
               <input type="text" class="form-control" id="customerName" placeholder="Enter customer name" required>
             </div>
-
-            <div class="col-md-6 ">
-              <label>Category</label>
-              <select class="form-select" id="orderCategory" required onchange="populateProducts()">
-                <option selected disabled>Select Category</option>
-                <option value="Gown">Gown</option>
-                <option value="Saree">Saree</option>
-                <option value="Lehenga">Lehenga</option>
-                <option value="Sherwani">Sherwani</option>
-                <option value="Accessories">Accessories</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label>Product</label>
-              <select class="form-select" id="productSelect" required onchange="updateForm()">
-                <option value="">Select</option>
-              </select>
-            </div>
-
             <div class="col-md-6">
               <label>Customer Number</label>
               <input type="tel" class="form-control" id="customerNumber" placeholder="Enter customer number" pattern="[0-9]{10}" maxlength="10" required>
             </div>
-
-            <div class="col-md-6">
-              <label>Price (₹)</label>
-              <input type="number" class="form-control" id="orderPrice" placeholder="Enter price per day" min="0" required>
-            </div>
-          
-            <div class="col-md-6">
-              <label>Product Image</label><br>
-              <img id="productImage" src="https://paaneriindia.com/cdn/shop/files/3407.jpg?v=1720518038" style="max-width: 120px; max-height: 150px; object-fit: cover;" class="border p-1">
-            </div>
-
-            <div class="col-md-6">
-              <label>Number of Days</label>
-              <input type="number" id="totalDays" class="form-control" value="1" min="1" required>
-            </div>
-
             <div class="col-md-6">
               <label>Date of Issue</label>
               <input type="date" id="issueDate" class="form-control" required>
             </div>
-
             <div class="col-md-6">
               <label>Date of Return</label>
-              <input type="date" id="returnDate" class="form-control" readonly>
+              <input type="date" id="returnDate" class="form-control" required>
             </div>
-
-            <div class="col-md-6">
-              <label>Total Price (₹)</label>
-              <input type="text" id="totalPrice" class="form-control" readonly>
+           
+            <div class="col-md-12">
+              <label>Items</label>
+              <table class="table table-bordered" id="itemsTable">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Product</th>
+                    <th>Price/Day (₹)</th>
+                    <th>Rented Number</th>
+                    <th>Total Price (₹)</th>
+                    <th>Image</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="itemsTableBody">
+                  <!-- Items will be added here -->
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>
+                      <select class="form-select" id="itemCategory" onchange="populateProducts('itemCategory','itemProduct')">
+                        <option selected disabled>Select Category</option>
+                        <option value="Gown">Gown</option>
+                        <option value="Saree">Saree</option>
+                        <option value="Lehenga">Lehenga</option>
+                        <option value="Sherwani">Sherwani</option>
+                        <option value="Accessories">Accessories</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-select" id="itemProduct" onchange="updateItemForm()">
+                        <option value="">Select</option>
+                      </select>
+                    </td>
+                    <td><input type="text" class="form-control" id="itemPrice" placeholder="Price per day"></td>
+                    <td><input type="number" class="form-control" id="itemDays" value="1" min="1" onchange="updateItemForm()"></td>
+                    <td><input type="number" class="form-control" id="itemRented" value="1" min="1"></td>
+                    <td><input type="text" class="form-control" id="itemTotalPrice" readonly></td>
+                    <td><img id="itemImage" src="" style="max-width: 60px; max-height: 60px; object-fit: cover;" class="border p-1"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="clearItemRow()">&#10006;</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="8" class="text-end mt-2">
+                      <button type="button" class="btn btn-success btn-sm" onclick="addItemToTable()">Add Row</button>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
-
             <div class="col-md-6">
               <label>Status</label>
               <select class="form-select" id="status">
@@ -182,20 +188,13 @@
     </div>
   </div>
 
-  <div class="d-flex justify-content-start align-items-center mb-3 gap-3 flex-wrap" id="categoryFilter">
-  <span class="category-option active" onclick="filterByCategory('All')">All</span>
-  <span class="category-option" onclick="filterByCategory('Saree')">Saree</span>
-  <span class="category-option" onclick="filterByCategory('Lehenga')">Lehenga</span>
-  <span class="category-option" onclick="filterByCategory('Gown')">Gown</span>
-  <span class="category-option" onclick="filterByCategory('Sherwani')">Sherwani</span>
-  <span class="category-option" onclick="filterByCategory('Accessories')">Accessories</span>
-</div>
+
   <!-- Orders Table -->
   <div class="table-responsive">
     <table class="table table-bordered align-middle mt-3" id="ordersTableContainer">
       <thead class="table-dark">
         <tr>
-          <th>#</th>
+          <th>Order Id</th>
           <th>Customer</th>
           <th>Product</th>
           <th>Image</th>
@@ -322,10 +321,10 @@
     let currentPage = 1;
     const pageSize = 10;
 
-    // Populate products based on category
-    function populateProducts() {
-      const cat = document.getElementById('orderCategory').value;
-      const productSelect = document.getElementById('productSelect');
+    // Populate products based on category (for both modal and item row)
+    function populateProducts(categoryId = 'orderCategory', productId = 'productSelect') {
+      const cat = document.getElementById(categoryId).value;
+      const productSelect = document.getElementById(productId);
       productSelect.innerHTML = '<option value="">Select</option>';
       if (productsByCategory[cat]) {
         productsByCategory[cat].forEach(p => {
@@ -338,72 +337,105 @@
           productSelect.appendChild(opt);
         });
       }
-      updateForm();
+      if(productId === 'itemProduct') updateItemForm();
+    }
+
+    // Update item row fields (image, price, total)
+    function updateItemForm() {
+      const productSelect = document.getElementById('itemProduct');
+      const itemPrice = document.getElementById('itemPrice');
+      const itemDays = document.getElementById('itemDays');
+      const itemTotalPrice = document.getElementById('itemTotalPrice');
+      const itemImage = document.getElementById('itemImage');
+      const selected = productSelect.selectedOptions[0];
+      if(selected) {
+        if(!itemPrice.value) itemPrice.value = selected.getAttribute('data-price') || 0;
+        itemImage.src = selected.getAttribute('data-photo') || '';
+      }
+      const price = parseFloat(itemPrice.value) || 0;
+      const days = parseInt(itemDays.value) || 0;
+      itemTotalPrice.value = (price * days).toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('itemProduct').addEventListener('change', updateItemForm);
+      document.getElementById('itemPrice').addEventListener('input', updateItemForm);
+      document.getElementById('itemDays').addEventListener('input', updateItemForm);
+    });
+
+    // Add item to table
+    let items = [];
+    function addItemToTable() {
+      const cat = document.getElementById('itemCategory').value;
+      const prodSelect = document.getElementById('itemProduct');
+      const prod = prodSelect.value;
+      const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+      const days = parseInt(document.getElementById('itemDays').value) || 0;
+      const rented = parseInt(document.getElementById('itemRented').value) || 1;
+      const total = parseFloat(document.getElementById('itemTotalPrice').value) || 0;
+      const img = document.getElementById('itemImage').src;
+      if(!cat || !prod || !days) return;
+      items.push({category: cat, product: prod, price, days, rented, total, img});
+      renderItemsTable();
+      clearItemRow();
+    }
+
+    function clearItemRow() {
+      document.getElementById('itemCategory').selectedIndex = 0;
+      document.getElementById('itemProduct').innerHTML = '<option value="">Select</option>';
+      document.getElementById('itemPrice').value = '';
+      document.getElementById('itemDays').value = 1;
+      document.getElementById('itemRented').value = 1;
+      document.getElementById('itemTotalPrice').value = '';
+      document.getElementById('itemImage').src = '';
+    }
+
+    function renderItemsTable() {
+      const tbody = document.getElementById('itemsTableBody');
+      tbody.innerHTML = '';
+      items.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.category}</td>
+          <td>${item.product}</td>
+          <td>${item.price}</td>
+          <td>${item.days}</td>
+          <td>${item.rented}</td>
+          <td>${item.total}</td>
+          <td><img src="${item.img}" style="max-width: 60px; max-height: 60px; object-fit: cover;" class="border p-1"></td>
+          <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(${idx})">&#10006;</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function removeItem(idx) {
+      items.splice(idx, 1);
+      renderItemsTable();
     }
 
     // Update form fields (image, price, return date)
-    function updateForm() {
-      const productSelect = document.getElementById('productSelect');
-      const totalDays = document.getElementById('totalDays');
-      const totalPrice = document.getElementById('totalPrice');
-      const issueDate = document.getElementById('issueDate');
-      const returnDate = document.getElementById('returnDate');
-      const productImage = document.getElementById('productImage');
-      const orderPrice = document.getElementById('orderPrice');
-      const selected = productSelect.selectedOptions[0];
-      // Use entered price if available, else fallback to product price
-      let price = orderPrice && orderPrice.value ? parseFloat(orderPrice.value) : (selected ? parseFloat(selected.getAttribute('data-price')) || 0 : 0);
-      const days = parseInt(totalDays.value) || 0;
-      totalPrice.value = (price * days).toFixed(2);
-      const issue = new Date(issueDate.value);
-      if (!isNaN(issue)) {
-        issue.setDate(issue.getDate() + days);
-        returnDate.value = issue.toISOString().split('T')[0];
-      }
-      const photoSrc = selected ? selected.getAttribute('data-photo') : '';
-      if (photoSrc) productImage.src = photoSrc;
-    }
-
-    // Update total price when price or days changes
-    document.getElementById('orderPrice').addEventListener('input', updateForm);
-
-    document.getElementById('productSelect').addEventListener('change', updateForm);
-    document.getElementById('totalDays').addEventListener('input', updateForm);
-    document.getElementById('issueDate').addEventListener('change', updateForm);
-
-    // Confirm order creation
     function confirmOrder() {
-  const customer = document.getElementById('customerName').value;
-  const customerNumber = document.getElementById('customerNumber').value;
-  const orderPrice = document.getElementById('orderPrice').value;
-      const category = document.getElementById('orderCategory').value;
-      const productSelect = document.getElementById('productSelect');
-      const selected = productSelect.selectedOptions[0];
-      if (!selected) return false;
-      const productName = selected.value;
-      const photo = selected.getAttribute('data-photo');
-      const days = document.getElementById('totalDays').value;
+      const customer = document.getElementById('customerName').value;
+      const customerNumber = document.getElementById('customerNumber').value;
       const issue = document.getElementById('issueDate').value;
       const ret = document.getElementById('returnDate').value;
-      const price = document.getElementById('totalPrice').value;
       const status = document.getElementById('status').value;
-      // Find or set rented count
-      let rented = 1;
-      const match = orders.find(o => o.product === productName && o.customer === customer);
-      if (match) rented = match.rented + 1;
+      if (!customer || !customerNumber || !issue || !ret || items.length === 0) {
+        Swal.fire('Error', 'Please fill all required fields and add at least one item.', 'error');
+        return false;
+      }
+      // Save as one order with multiple items
       orders.push({
         customer,
         customerNumber,
-        product: productName,
-        category,
-        photo,
-        days,
         issue,
         ret,
-        price: orderPrice || price,
-        rented,
-        status
+        status,
+        items: [...items]
       });
+      items = [];
+      renderItemsTable();
       Swal.fire('Success!', 'Rental Order Created!', 'success');
       filterAndRender();
       return false;
@@ -435,42 +467,44 @@
       filterAndRender();
     }
 
-    // Render orders with pagination
+    // Render orders with pagination (show customer and their items)
     function renderOrders() {
       const table = document.getElementById('ordersTable');
       table.innerHTML = '';
       const start = (currentPage - 1) * pageSize;
       const end = start + pageSize;
       const pageOrders = filteredOrders.slice(start, end);
+      let rowNum = start + 1;
       pageOrders.forEach((order, idx) => {
-        const row = document.createElement('tr');
-        let actionButtons = `
-          <button class=\"btn btn-sm btn-primary\" onclick=\"openEditModal(this)\">Edit</button>
-          <button class=\"btn btn-sm btn-danger\" onclick=\"confirmDelete(${start + idx})\">Delete</button>
-        `;
-        // Add Dry Clean link if status is 'Returned'
-        if (order.status === 'Returned') {
-          actionButtons = `
-            <a class=\"btn btn-sm btn-warning\" href=\"<?= base_url('AdminController/DryCleaning_Forward') ?>\">Dry Clean</a> ` + actionButtons;
+        if(order.items && order.items.length) {
+          order.items.forEach((item, itemIdx) => {
+            const row = document.createElement('tr');
+            let actionButtons = `
+              <button class=\"btn btn-sm btn-primary\" onclick=\"openEditModal(this)\">Edit</button>
+              <button class=\"btn btn-sm btn-danger\" onclick=\"confirmDelete(${start + idx})\">Delete</button>
+            `;
+            if (order.status === 'Returned' && item.category !== 'Accessories') {
+              actionButtons = `
+                <a class=\"btn btn-sm btn-warning\" href=\"<?= base_url('AdminController/DryCleaning_Forward') ?>\">Dry Clean</a> ` + actionButtons;
+            }
+            row.innerHTML = `
+              ${itemIdx === 0 ? `<td rowspan='${order.items.length}'>${rowNum++}</td>` : ''}
+              ${itemIdx === 0 ? `<td rowspan='${order.items.length}'>${order.customer}<br><small>${order.customerNumber}</small></td>` : ''}
+              <td>${item.product}</td>
+              <td><img src="${item.img}" style="max-width:40px;max-height:40px;object-fit:cover;"/></td>
+              <td>${item.category}</td>
+              <td>${item.days}</td>
+              <td>${order.issue}</td>
+              <td>${order.ret}</td>
+              <td>${item.total}</td>
+              <td>${item.rented || 1}</td>
+
+              ${itemIdx === 0 ? `<td rowspan='${order.items.length}'>${order.status}</td>` : ''}
+              ${itemIdx === 0 ? `<td rowspan='${order.items.length}'>${(order.status === 'Dry Cleaning') ? '' : actionButtons}</td>` : ''}
+            `;
+            table.appendChild(row);
+          });
         }
-        // Hide Dry Clean button if status is 'Dry Cleaning'
-        row.innerHTML = `
-          <td>${start + idx + 1}</td>
-          <td>${order.customer}</td>
-          <td>${order.product}</td>
-          <td><img src="${order.photo}" class="order-img-thumb" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImageModal('${order.photo}')" style="max-width: 50px; cursor: pointer;"></td>
-          <td>${order.category}</td>
-          <td>${order.days}</td>
-          <td>${order.issue}</td>
-          <td>${order.ret}</td>
-          <td>₹${order.price}</td>
-          <td>${order.rented} times</td>
-          <td>${order.status}</td>
-          <td>
-            ${(order.status === 'Dry Cleaning') ? '' : actionButtons}
-          </td>
-        `;
-        table.appendChild(row);
       });
       renderPagination();
     }
@@ -515,29 +549,11 @@
       filterAndRender();
     };
 
-    function confirmDelete() {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'This order will be deleted!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire('Deleted!', 'Order has been deleted.', 'success');
-        }
-      });
-    }
 
-    // filterTable is now handled by filterAndRender (searches customer, product, status, case-insensitive)
 
-    function downloadPDF() {
-      Swal.fire('PDF Download', 'PDF export logic goes here.', 'info');
-    }
 
-    function downloadExcel() {
-      Swal.fire('Excel Download', 'Excel export logic goes here.', 'info');
-    }
+
+
   </script>
     
     </div>

@@ -54,8 +54,8 @@ class AdminController extends CI_Controller
 
 public function DryCleaning_Forward()
 {
-    $this->load->model('Order_model');
-    $data['products'] = $this->Order_model->get_all_products_for_drycleaning();
+    $this->load->model('OrdersModel');
+    $data['products'] = $this->OrdersModel->get_all_products_for_drycleaning();
     $this->load->view('Admin/DryCleaning_Forward', $data);
 }
 
@@ -89,11 +89,7 @@ public function save_drycleaning_forward()
 
 //Drycleaning 
 // Show status page
- // Show add form
-    public function DryCleaning_Add()
-    {
-        $this->load->view('Admin/DryCleaning_Add');
-    }
+
 
     // Save new record
     public function save_drycleaning()
@@ -142,6 +138,8 @@ public function save_drycleaning_forward()
 
         echo json_encode(['success' => $updated]);
     }
+
+
 
     // AJAX delete
     public function delete_drycleaning()

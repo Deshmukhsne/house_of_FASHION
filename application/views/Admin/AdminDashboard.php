@@ -2,161 +2,298 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Admin Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <?php $this->load->view('CommonLinks'); ?>
-    <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/script.js') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>" />
+    <link rel="stylesheet" href="<?= base_url('assets/script.js') ?>" />
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootstrap CSS & JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="<?= base_url('assets/images/favicon.png') ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
 
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #343a40;
+            min-height: 100vh;
+        }
 
+        #sidebar {
+            background: #343a40;
+            min-width: 240px;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 2px 0 12px rgb(0 0 0 / 0.1);
+        }
 
+        #sidebar.collapsed {
+            min-width: 80px;
+        }
+
+        .main {
+            flex-grow: 1;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: inset 0 0 10px rgb(0 0 0 / 0.05);
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgb(0 0 0 / 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgb(0 0 0 / 0.15);
+        }
+
+        .card-header {
+            background: transparent;
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: #212529;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-number {
+            font-weight: 700;
+            font-size: 2.25rem;
+            margin-top: 0.15rem;
+            color: #212529;
+        }
+
+        .card .bi {
+            opacity: 0.85;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover .bi {
+            opacity: 1;
+        }
+
+        .badge {
+            font-weight: 600;
+            padding: 0.4em 0.75em;
+            font-size: 0.85rem;
+            border-radius: 20px;
+        }
+
+        .category-badge {
+            padding: 0.25em 0.75em;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #fff;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgb(0 0 0 / 0.15);
+        }
+
+        .saree-badge {
+            background: linear-gradient(135deg, #ffda06, #f7b731);
+        }
+
+        .dress-badge {
+            background: linear-gradient(135deg, #ee8011, #d35400);
+        }
+
+        .accessories-badge {
+            background: linear-gradient(135deg, #6bb819, #28a745);
+        }
+
+        .btn-group .btn {
+            border-radius: 30px !important;
+            padding: 0.4rem 1.3rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            color: #495057;
+            border: 2px solid transparent;
+        }
+
+        .btn-group .btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-group .btn.active {
+            background: #ffda06;
+            color: #212529;
+            border-color: #ffda06;
+            box-shadow: 0 4px 10px rgb(255 218 6 / 0.5);
+        }
+
+        table.table {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgb(0 0 0 / 0.08);
+        }
+
+        table.table thead {
+            background: #ffda06;
+            color: #212529;
+        }
+
+        table.table thead th {
+            font-weight: 700;
+            border: none;
+        }
+
+        table.table tbody tr:hover {
+            background-color: #fff7cc;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .list-group-item {
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 5px 12px rgb(0 0 0 / 0.05);
+            transition: background-color 0.3s ease;
+        }
+
+        .list-group-item:hover {
+            background-color: #fffae6;
+            cursor: pointer;
+        }
+
+        .payment-chart-legend span.badge {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 767.98px) {
+            .btn-group {
+                justify-content: center;
+                display: flex;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div class="d-flex">
-        <!-- Sidebar -->
         <?php $this->load->view('include/sidebar'); ?>
 
-        <!-- Main Content Area -->
         <div class="main">
-            <!-- Navbar -->
             <?php $this->load->view('include/navbar'); ?>
 
-            <!-- Page Content -->
             <div class="container-fluid p-4">
-                <div class="row g-2">
-                    <div class="col-12 col-md-6">
-                        <div class="card revenue-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="stat-label">TOTAL REVENUE</h6>
-                                        <h3 class="stat-number">₹1,25,480</h3>
-                                    </div>
-                                    <i class="bi bi-currency-rupee fs-1 text-success"></i>
+                <div class="row g-4">
+                    <!-- Stat Cards -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card p-3">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="stat-label">TOTAL REVENUE</h6>
+                                    <h3 class="stat-number">₹1,25,480</h3>
+                                    <span class="badge bg-success bg-opacity-10 text-success mt-2">+12.5% from last month</span>
                                 </div>
-                                <div class="mt-3">
-                                    <span class="badge bg-success bg-opacity-10 text-success">+12.5% from last month</span>
-                                </div>
+                                <i class="bi bi-currency-rupee fs-1 text-success"></i>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-12 col-md-6">
-                        <div class="card profit-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="stat-label">TOTAL PROFIT</h6>
-                                        <h3 class="stat-number">₹42,650</h3>
-                                    </div>
-                                    <i class="bi bi-graph-up-arrow fs-1 text-info"></i>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card p-3">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="stat-label">TOTAL PROFIT</h6>
+                                    <h3 class="stat-number">₹42,650</h3>
+                                    <span class="badge bg-info bg-opacity-10 text-info mt-2">+8.3% from last month</span>
                                 </div>
-                                <div class="mt-3">
-                                    <span class="badge bg-info bg-opacity-10 text-info">+8.3% from last month</span>
-                                </div>
+                                <i class="bi bi-graph-up-arrow fs-1 text-info"></i>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-12 col-md-6">
-                        <div class="card loss-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="stat-label">TOTAL LOSS</h6>
-                                        <h3 class="stat-number">₹3,250</h3>
-                                    </div>
-                                    <i class="bi bi-graph-down-arrow fs-1 text-danger"></i>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card p-3">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="stat-label">TOTAL LOSS</h6>
+                                    <h3 class="stat-number">₹3,250</h3>
+                                    <span class="badge bg-danger bg-opacity-10 text-danger mt-2">-2.1% from last month</span>
                                 </div>
-                                <div class="mt-3">
-                                    <span class="badge bg-danger bg-opacity-10 text-danger">-2.1% from last month</span>
-                                </div>
+                                <i class="bi bi-graph-down-arrow fs-1 text-danger"></i>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-12 col-md-6">
-                        <div class="card payment-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="stat-label">PENDING PAYMENTS</h6>
-                                        <h3 class="stat-number">₹15,780</h3>
-                                    </div>
-                                    <i class="bi bi-hourglass-split fs-1 text-warning"></i>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card p-3">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="stat-label">PENDING PAYMENTS</h6>
+                                    <h3 class="stat-number">₹15,780</h3>
+                                    <span class="badge bg-warning bg-opacity-10 text-warning mt-2">5 unpaid bills</span>
                                 </div>
-                                <div class="mt-3">
-                                    <span class="badge bg-warning bg-opacity-10 text-warning">5 unpaid bills</span>
-                                </div>
+                                <i class="bi bi-hourglass-split fs-1 text-warning"></i>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Charts Row -->
-                <div class="row mt-4">
-                    <div class="col-md-8">
-                        <div class="card">
+                <div class="row mt-5">
+                    <div class="col-lg-8 col-md-12 mb-4 mb-lg-0">
+                        <div class="card h-100">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Revenue Analytics</h5>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-secondary active">Daily</button>
-                                    <button class="btn btn-sm btn-outline-secondary">Monthly</button>
-                                    <button class="btn btn-sm btn-outline-secondary">Yearly</button>
+                                <div class="btn-group" role="group" aria-label="Chart time filters">
+                                    <button type="button" class="btn btn-outline-secondary active">Daily</button>
+                                    <button type="button" class="btn btn-outline-secondary">Monthly</button>
+                                    <button type="button" class="btn btn-outline-secondary">Yearly</button>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <canvas id="revenueChart" height="300"></canvas>
+                                <canvas id="revenueChart" height="320"></canvas>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card">
+                    <div class="col-lg-4 col-md-12">
+                        <div class="card h-100">
                             <div class="card-header">
                                 <h5 class="mb-0">Payment Methods</h5>
                             </div>
-                            <div class="card-body">
-                                <canvas id="paymentChart" height="300"></canvas>
-                                <div class="mt-3 text-center">
-                                    <div class="d-flex justify-content-around">
-                                        <div>
-                                            <span class="badge bg-primary me-2"></span>
-                                            <span>Cash: ₹68,420</span>
-                                        </div>
-                                        <div>
-                                            <span class="badge bg-success me-2"></span>
-                                            <span>Online: ₹57,060</span>
-                                        </div>
-                                    </div>
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <canvas id="paymentChart" height="320"></canvas>
+                                <div class="mt-4 d-flex justify-content-around payment-chart-legend">
+                                    <div><span class="badge bg-primary"></span>Cash: ₹68,420</div>
+                                    <div><span class="badge bg-success"></span>Online: ₹57,060</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Category Sales and Recent Transactions -->
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <div class="card">
+                <div class="row mt-5">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <div class="card h-100">
                             <div class="card-header">
                                 <h5 class="mb-0">Category-wise Sales</h5>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover mb-0">
                                         <thead>
                                             <tr>
                                                 <th>Category</th>
@@ -192,13 +329,13 @@
                     </div>
 
                     <div class="col-md-6">
-                        <div class="card">
+                        <div class="card h-100">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Recent Transactions</h5>
                                 <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
                             </div>
-                            <div class="card-body">
-                                <div class="list-group">
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
                                     <a href="#" class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
                                             <h6 class="mb-1">Bill #MLC-1025</h6>
@@ -234,14 +371,10 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    </div>
-    </div>
     </div>
 
     <script>
-        // Initialize charts
         document.addEventListener('DOMContentLoaded', function() {
             // Revenue Chart
             const revenueCtx = document.getElementById('revenueChart').getContext('2d');
@@ -252,26 +385,35 @@
                     datasets: [{
                             label: 'Saree',
                             data: [4500, 5200, 4800, 6100, 5900, 7200, 6800, 7500, 8200, 7900],
-                            borderColor: '#ffda06ff',
-                            backgroundColor: 'rgba(209, 78, 120, 0.1)',
+                            borderColor: '#ffda06',
+                            backgroundColor: 'rgba(255, 218, 6, 0.15)',
                             tension: 0.3,
-                            fill: true
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 3
                         },
                         {
                             label: 'Dress',
                             data: [3200, 3800, 4100, 3500, 4200, 3900, 4500, 5100, 4800, 5300],
-                            borderColor: '#ee8011ff',
-                            backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                            borderColor: '#ee8011',
+                            backgroundColor: 'rgba(238, 128, 17, 0.15)',
                             tension: 0.3,
-                            fill: true
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 3
                         },
                         {
                             label: 'Accessories',
                             data: [1200, 1500, 1100, 1300, 1400, 1600, 1250, 1450, 1700, 1550],
-                            borderColor: '#6bb819ff',
-                            backgroundColor: 'rgba(108, 117, 125, 0.1)',
+                            borderColor: '#6bb819',
+                            backgroundColor: 'rgba(107, 184, 25, 0.15)',
                             tension: 0.3,
-                            fill: true
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 3
                         }
                     ]
                 },
@@ -280,12 +422,22 @@
                     plugins: {
                         legend: {
                             position: 'top',
+                            labels: {
+                                font: {
+                                    weight: '600'
+                                }
+                            }
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': ₹' + context.raw.toLocaleString('en-IN');
-                                }
+                                label: ctx => `${ctx.dataset.label}: ₹${ctx.raw.toLocaleString('en-IN')}`
+                            },
+                            backgroundColor: 'rgba(0,0,0,0.75)',
+                            titleFont: {
+                                weight: '700'
+                            },
+                            bodyFont: {
+                                weight: '500'
                             }
                         }
                     },
@@ -293,16 +445,30 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(value) {
-                                    return '₹' + value.toLocaleString('en-IN');
+                                callback: val => '₹' + val.toLocaleString('en-IN'),
+                                font: {
+                                    weight: '600'
                                 }
+                            },
+                            grid: {
+                                color: '#e9ecef'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    weight: '600'
+                                }
+                            },
+                            grid: {
+                                display: false
                             }
                         }
                     }
                 }
             });
 
-            // Payment Method Chart
+            // Payment Chart
             const paymentCtx = document.getElementById('paymentChart').getContext('2d');
             const paymentChart = new Chart(paymentCtx, {
                 type: 'doughnut',
@@ -310,24 +476,31 @@
                     labels: ['Cash', 'Online'],
                     datasets: [{
                         data: [68420, 57060],
-                        backgroundColor: [" #f3ac29ff", "#8d6213ff"],           
-                        borderWidth: 1
+                        backgroundColor: ['#f3ac29', '#8d6213'],
+                        borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
+                    cutout: '70%',
                     plugins: {
                         legend: {
                             position: 'bottom',
+                            labels: {
+                                font: {
+                                    weight: '600',
+                                    size: 14
+                                }
+                            }
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    return `${label}: ₹${value.toLocaleString('en-IN')} (${percentage}%)`;
+                                label: ctx => {
+                                    const label = ctx.label || '';
+                                    const value = ctx.raw || 0;
+                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percent = Math.round((value / total) * 100);
+                                    return `${label}: ₹${value.toLocaleString('en-IN')} (${percent}%)`;
                                 }
                             }
                         }
@@ -337,45 +510,33 @@
         });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Navbar  toggler
+        // Sidebar toggler
         const toggler = document.querySelector(".toggler-btn");
         const closeBtn = document.querySelector(".close-sidebar");
         const sidebar = document.querySelector("#sidebar");
 
         if (toggler && sidebar) {
-            toggler.addEventListener("click", function() {
-                sidebar.classList.toggle("collapsed");
-            });
+            toggler.addEventListener("click", () => sidebar.classList.toggle("collapsed"));
         }
-
         if (closeBtn && sidebar) {
-            closeBtn.addEventListener("click", function() {
-                sidebar.classList.remove("collapsed");
-            });
+            closeBtn.addEventListener("click", () => sidebar.classList.remove("collapsed"));
         }
     </script>
 
-  
-<?php if ($this->session->flashdata('login_success')): ?>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        Swal.fire({
-            title: "Login Successful!",
-            text: "<?= $this->session->flashdata('login_success') ?>",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 2000
-        });
-    });
-</script>
-<?php endif; ?>
-
-
-
-
-
+    <?php if ($this->session->flashdata('login_success')) : ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    title: "Login Successful!",
+                    text: "<?= $this->session->flashdata('login_success') ?>",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

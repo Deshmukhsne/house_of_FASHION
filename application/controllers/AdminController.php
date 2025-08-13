@@ -226,14 +226,15 @@ class AdminController extends CI_Controller
     {
         $this->load->view('Admin/monthlyreport');
     }
+    public function Report()
+    {
+        $this->load->view('Admin/Report');
+    }
+
     public function Profile()
     {
         $this->load->view('Admin/Admin_Profile');
     }
-
-
-
-
 
     // Export to Excel without using library
     public function export_excel()
@@ -346,5 +347,9 @@ class AdminController extends CI_Controller
         }
 
         echo "Password hashing completed for existing admin users.";
+    }
+    public  function printInvoice()
+    {
+        $this->load->view('admin/print_invoice');
     }
 }

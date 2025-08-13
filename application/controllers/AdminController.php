@@ -301,4 +301,8 @@ class AdminController extends CI_Controller
     {
         $this->load->view('Admin/Report');
     }
+    
+    public function CreateOrder(){
+        $this->load->view('Admin/CreateOrder');
+    }
 }

@@ -12,11 +12,8 @@ class AdminController extends CI_Controller
         $this->load->model('Login_Model');
         $this->load->model('Admin_Model');
         $this->load->model('Product_model');
-<<<<<<< HEAD
-        $this->load->model('CustomerModel');
-         $this->load->model('DryCleaning_model');
-=======
->>>>>>> 0afb0de1758745f7252a78474db716f460159c21
+        $this->load->model('DryCleaning_model');
+
     }
 
     public function index()

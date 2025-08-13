@@ -14,6 +14,8 @@ class AdminController extends CI_Controller
         $this->load->model('Product_model');
 
          $this->load->model('DryCleaning_model');
+
+        $this->load->model('DryCleaning_model');
     }
 
     public function index()
@@ -46,48 +48,125 @@ class AdminController extends CI_Controller
         $this->load->view("CommonLinks");
     }
 
-     // Dry cleaning
+    
+
+ 
+
 public function DryCleaning_Forward()
 {
-    $this->load->view('Admin/DryCleaning_Forward');
+    $this->load->model('Order_model');
+    $data['products'] = $this->Order_model->get_all_products_for_drycleaning();
+    $this->load->view('Admin/DryCleaning_Forward', $data);
 }
 
-public function DryCleaning_Status()
+// Save forward form to DB
+public function save_drycleaning_forward()
 {
-    if ($this->input->server('REQUEST_METHOD') === 'POST') {
+    $this->load->model('DryCleaning_model');
+
+    $data = [
+        'vendor_name'     => $this->input->post('vendor_name'),
+        'vendor_mobile'   => $this->input->post('vendor_mobile'),
+        'product_name'    => $this->input->post('product_name'),
+        'product_status'  => $this->input->post('product_status'),
+        'forward_date'    => $this->input->post('forward_date'),
+        'return_date'     => $this->input->post('return_date') ?: null,
+        'status'          => 'In Cleaning', // default
+        'expected_return' => $this->input->post('expected_return'),
+        'cleaning_notes'  => $this->input->post('cleaning_notes'),
+        'created_at'      => date('Y-m-d H:i:s'),
+        'updated_at'      => date('Y-m-d H:i:s')
+    ];
+
+    if ($this->DryCleaning_model->insert($data)) {
+        $this->session->set_flashdata('success', 'Dry cleaning forwarded successfully.');
+    } else {
+        $this->session->set_flashdata('error', 'Failed to forward dry cleaning.');
+    }
+
+    redirect('AdminController/DryCleaning_Forward');
+}
+
+//Drycleaning 
+// Show status page
+ // Show add form
+    public function DryCleaning_Add()
+    {
+        $this->load->view('Admin/DryCleaning_Add');
+    }
+
+    // Save new record
+    public function save_drycleaning()
+    {
+        $this->load->model('DryCleaning_model');
+
         $data = [
-            'vendor_name'    => $this->input->post('vendor_name'),
-            'vendor_mobile'  => $this->input->post('vendor_mobile'),
-            'forward_date'   => $this->input->post('forward_date'),
-            'return_date'    => $this->input->post('return_date'),
-            'product_name'   => $this->input->post('product_name'),
-            'product_status' => $this->input->post('product_status'),
-            'cleaning_notes' => $this->input->post('cleaning_notes'),
-            'created_at'     => date('Y-m-d H:i:s')
+            'vendor_name'     => $this->input->post('vendor_name'),
+            'vendor_mobile'   => $this->input->post('vendor_mobile'),
+            'product_name'    => $this->input->post('product_name'),
+            'product_status'  => $this->input->post('product_status'),
+            'forward_date'    => $this->input->post('forward_date'),
+            'return_date'     => $this->input->post('return_date') ?: null,
+            'status'          => 'Forwarded', // default
+            'expected_return' => $this->input->post('expected_return') ?: null,
+            'cleaning_notes'  => $this->input->post('cleaning_notes'),
+            'created_at'      => date('Y-m-d H:i:s'),
+            'updated_at'      => date('Y-m-d H:i:s')
         ];
 
-        $this->db->insert('drycleaning_status', $data);
+        if ($this->DryCleaning_model->insert($data)) {
+            $this->session->set_flashdata('success', 'Record added successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to add record.');
+        }
 
-        // Redirect with success
-        $this->session->set_flashdata('success', 'Dress forwarded to cleaning successfully.');
         redirect('AdminController/DryCleaning_Status');
-    } else {
-        $this->load->view('Admin/DryCleaning_Status');
     }
-}
 
+    // Status page
+    public function DryCleaning_Status()
+    {
+        $this->load->model('DryCleaning_model');
+        $data['drycleaning_data'] = $this->DryCleaning_model->get_all();
+        $this->load->view('Admin/DryCleaning_Status', $data);
+    }
 
+    // AJAX update status
+    public function update_status()
+    {
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
 
+        $this->load->model('DryCleaning_model');
+        $updated = $this->DryCleaning_model->update_status($id, $status);
 
+        echo json_encode(['success' => $updated]);
+    }
 
+    // AJAX delete
+    public function delete_drycleaning()
+    {
+        $id = $this->input->post('id');
 
+        $this->load->model('DryCleaning_model');
+        $deleted = $this->DryCleaning_model->delete($id);
 
+        echo json_encode(['success' => $deleted]);
+    }
 
+    // Add to stock (only if Returned)
+    public function add_to_stock()
+    {
+        $status = $this->input->post('status');
 
+        if ($status !== 'Returned') {
+            echo json_encode(['success' => false, 'message' => 'Status must be Returned']);
+            return;
+        }
 
-
-
-
+        // Stock saving logic here...
+        echo json_encode(['success' => true]);
+    }
 
 
 
@@ -249,14 +328,15 @@ public function DryCleaning_Status()
     {
         $this->load->view('Admin/monthlyreport');
     }
+    public function Report()
+    {
+        $this->load->view('Admin/Report');
+    }
+
     public function Profile()
     {
         $this->load->view('Admin/Admin_Profile');
     }
-
-
-
-
 
     // Export to Excel without using library
     public function export_excel()
@@ -369,5 +449,9 @@ public function DryCleaning_Status()
         }
 
         echo "Password hashing completed for existing admin users.";
+    }
+    public  function printInvoice()
+    {
+        $this->load->view('admin/print_invoice');
     }
 }

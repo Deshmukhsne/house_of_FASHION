@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Dry Cleaning Status</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <?php $this->load->view('CommonLinks'); ?>
     <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,10 +13,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
-        .container {
-            overflow: auto;
-        }
-
         h2.section-heading {
             background-color: #000;
             color: #FFD700;
@@ -26,41 +20,14 @@
             border-radius: 8px;
             text-align: center;
             font-weight: 400;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            animation: fadeZoom 1s ease-in-out;
             font-size: 2rem;
         }
-
-        .btn-stock {
-            background-color: #28a745;
-            color: white;
-            padding: 5px 15px;
-            font-size: 14px;
-            border-radius: 5px;
-            border: none;
-            transition: 0.3s;
-        }
-
-        .btn-stock:hover {
-            background-color: #218838;
-        }
-
-        .btn-delete {
-            background-color: #dc3545;
-            color: white;
-            padding: 5px 15px;
-            font-size: 14px;
-            border-radius: 5px;
-            border: none;
-            transition: 0.3s;
-        }
-
-        .btn-delete:hover {
-            background-color: #b02a37;
-        }
+        .btn-stock { background-color: #28a745; color: white; }
+        .btn-stock:hover { background-color: #218838; }
+        .btn-delete { background-color: #dc3545; color: white; }
+        .btn-delete:hover { background-color: #b02a37; }
     </style>
 </head>
-
 <body>
 <div class="d-flex">
     <?php $this->load->view('include/sidebar'); ?>
@@ -69,64 +36,49 @@
 
         <div class="container-fluid p-4">
             <div class="container mt-5 p-4 bg-light rounded shadow">
-                <h2 class="section-heading mb-4">Dress Cleaning Status</h2>
+                <h2 class="section-heading mb-4">Dry Cleaning Status</h2>
 
                 <table class="table table-bordered table-striped" id="cleaningTable">
                     <thead class="table-dark">
                     <tr>
-                        <th>Product ID</th>
+                        <th>ID</th>
+                        <th>Vendor Name</th>
+                        <th>Vendor Mobile</th>
                         <th>Product Name</th>
-                        <th>Category</th>
+                        <th>Product Status</th>
                         <th>Forward Date</th>
-                        <th>Expected Return</th>
-                        <th>Cleaning Charges</th>
+                        <th>Return Date</th>
                         <th>Status</th>
+                        <th>Expected Return</th>
+                        <th>Cleaning Notes</th>
                         <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- Example row (replace with PHP loop) -->
-                    <tr>
-                        <td>P1001</td>
-                        <td>White-Sherwani</td>
-                        <td>Sherwani</td>
-                        <td>2025-07-23</td>
-                        <td>2025-07-26</td>
-                        <td>1500.00</td>
-                        <td class="text-warning">
-                            <select name="status" class="form-select" required>
-                                <option value="">-- Select Status --</option>
-                                <option>Forwarded</option>
-                                <option>In Cleaning</option>
-                                <option>Returned</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn-stock">Add in Stock</button>
-                            <button class="btn-delete">Delete</button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>P1001</td>
-                        <td>White-Sherwani</td>
-                        <td>Sherwani</td>
-                        <td>2025-07-23</td>
-                        <td>2025-07-26</td>
-                        <td>1500.00</td>
-                        <td class="text-warning">
-                            <select name="status" class="form-select" required>
-                                <option value="">-- Select Status --</option>
-                                <option>Forwarded</option>
-                                <option>In Cleaning</option>
-                                <option>Returned</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn-stock">Add in Stock</button>
-                            <button class="btn-delete">Delete</button>
-                        </td>
-                    </tr>
+                    <?php foreach ($drycleaning_data as $item): ?>
+                        <tr>
+                            <td><?= $item->id ?></td>
+                            <td><?= $item->vendor_name ?></td>
+                            <td><?= $item->vendor_mobile ?></td>
+                            <td><?= $item->product_name ?></td>
+                            <td><?= $item->product_status ?></td>
+                            <td><?= $item->forward_date ?></td>
+                            <td><?= $item->return_date ?></td>
+                            <td>
+                                <select name="status" class="form-select" data-id="<?= $item->id ?>">
+                                    <option value="Forwarded" <?= $item->status == 'Forwarded' ? 'selected' : '' ?>>Forwarded</option>
+                                    <option value="In Cleaning" <?= $item->status == 'In Cleaning' ? 'selected' : '' ?>>In Cleaning</option>
+                                    <option value="Returned" <?= $item->status == 'Returned' ? 'selected' : '' ?>>Returned</option>
+                                </select>
+                            </td>
+                            <td><?= $item->expected_return ?></td>
+                            <td><?= $item->cleaning_notes ?></td>
+                            <td>
+                                <button class="btn btn-stock btn-sm">Add in Stock</button>
+                                <button class="btn btn-delete btn-sm">Delete</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -137,22 +89,36 @@
 <script>
 $(document).ready(function() {
 
-    // ADD TO STOCK
+    // Status change save to DB
+    $("#cleaningTable").on("change", "select[name='status']", function() {
+        let recordID = $(this).data("id");
+        let newStatus = $(this).val();
+
+        $.post("<?= base_url('drycleaning/update_status') ?>", {
+            id: recordID,
+            status: newStatus
+        }, function(response) {
+            let res = JSON.parse(response);
+            if (res.success) {
+                Swal.fire({ icon: 'success', title: 'Status Updated', timer: 1200, showConfirmButton: false });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Update Failed' });
+            }
+        });
+    });
+
+    // Add to Stock (only if Returned)
     $("#cleaningTable").on("click", ".btn-stock", function() {
         let row = $(this).closest("tr");
-        let productID = row.find("td:eq(0)").text().trim();
-        let productName = row.find("td:eq(1)").text().trim();
-        let category = row.find("td:eq(2)").text().trim();
-        let forwardDate = row.find("td:eq(3)").text().trim();
-        let expectedReturn = row.find("td:eq(4)").text().trim();
-        let cleaningCharges = row.find("td:eq(5)").text().trim();
         let status = row.find("select[name='status']").val();
+        let recordID = row.find("td:eq(0)").text().trim();
+        let productName = row.find("td:eq(3)").text().trim();
 
-        if (!status) {
+        if (status !== "Returned") {
             Swal.fire({
                 icon: 'warning',
-                title: 'Select Status',
-                text: 'Please choose a status before adding to stock.'
+                title: 'Status must be Returned',
+                text: 'Only returned items can be added to stock.'
             });
             return;
         }
@@ -167,69 +133,52 @@ $(document).ready(function() {
             confirmButtonText: 'Yes, Add'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?= base_url('stock/add') ?>",
-                    type: "POST",
-                    data: {
-                        product_id: productID,
-                        product_name: productName,
-                        category: category,
-                        forward_date: forwardDate,
-                        expected_return: expectedReturn,
-                        cleaning_charges: cleaningCharges,
-                        status: status
-                    },
-                    success: function() {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Added to Stock',
-                            text: `${productName} has been added successfully!`
-                        }).then(() => {
-                            row.remove();
-                        });
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Failed to add item to stock.'
-                        });
-                    }
+                $.post("<?= base_url('stock/add') ?>", { id: recordID }, function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Stock',
+                        text: `${productName} added successfully!`
+                    }).then(() => {
+                        row.remove();
+                    });
+                }).fail(function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to add item to stock.'
+                    });
                 });
             }
         });
     });
 
-    // DELETE ITEM
+    // Delete record
     $("#cleaningTable").on("click", ".btn-delete", function() {
         let row = $(this).closest("tr");
-        let productID = row.find("td:eq(0)").text().trim();
-        let productName = row.find("td:eq(1)").text().trim();
+        let recordID = row.find("td:eq(0)").text().trim();
+        let productName = row.find("td:eq(3)").text().trim();
 
         Swal.fire({
             icon: 'warning',
             title: 'Delete Item?',
-            text: `Are you sure you want to delete ${productName}?`,
+            text: `Delete ${productName}?`,
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'Yes, Delete'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?= base_url('drycleaning/delete') ?>",
-                    type: "POST",
-                    data: { product_id: productID },
-                    success: function() {
+                $.post("<?= base_url('drycleaning/delete') ?>", { id: recordID }, function(response) {
+                    let res = JSON.parse(response);
+                    if (res.success) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Deleted',
-                            text: `${productName} has been deleted.`
+                            text: `${productName} deleted successfully.`
                         }).then(() => {
                             row.remove();
                         });
-                    },
-                    error: function() {
+                    } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -243,6 +192,5 @@ $(document).ready(function() {
 
 });
 </script>
-
 </body>
 </html>

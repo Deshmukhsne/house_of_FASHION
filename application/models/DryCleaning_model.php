@@ -3,11 +3,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class DryCleaning_model extends CI_Model {
 
-    public function insertDryCleaning($data) {
-        return $this->db->insert('drycleaning_status', $data);
+    public function insert($data)
+    {
+        $this->db->insert('drycleaning_status', $data);
+        return $this->db->affected_rows() > 0;
     }
 
-    public function getProducts() {
-        return $this->db->get('products')->result(); // Assuming 'products' table exists
+    public function get_all()
+    {
+        $this->db->order_by('id', 'DESC');
+        return $this->db->get('drycleaning_status')->result();
+    }
+
+    public function update_status($id, $status)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('drycleaning_status', [
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+        return $this->db->affected_rows() > 0;
+    }
+
+    public function delete($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('drycleaning_status');
+        return $this->db->affected_rows() > 0;
     }
 }

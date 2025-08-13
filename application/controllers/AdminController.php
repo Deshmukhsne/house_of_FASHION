@@ -12,8 +12,11 @@ class AdminController extends CI_Controller
         $this->load->model('Login_Model');
         $this->load->model('Admin_Model');
         $this->load->model('Product_model');
+<<<<<<< HEAD
         $this->load->model('CustomerModel');
          $this->load->model('DryCleaning_model');
+=======
+>>>>>>> 0afb0de1758745f7252a78474db716f460159c21
     }
 
     public function index()
@@ -115,7 +118,6 @@ public function DryCleaning_Status()
     {
         $this->form_validation->set_rules('username', 'Username', 'required|trim');
         $this->form_validation->set_rules('password', 'Password', 'required|trim');
-        $this->form_validation->set_rules('role', 'Role', 'required|in_list[Admin,Accountant,Staff]');
 
         if ($this->form_validation->run() == FALSE) {
             $this->session->set_flashdata('error', validation_errors());
@@ -123,20 +125,19 @@ public function DryCleaning_Status()
         } else {
             $username = $this->input->post('username', TRUE);
             $password = $this->input->post('password', TRUE);
-            $role     = $this->input->post('role', TRUE);
 
-            $user = $this->Login_Model->check_login($username, $password, $role);
+            $user = $this->Login_Model->check_login($username, $password);
 
             if ($user) {
                 $this->session->set_userdata([
                     'username' => $user->username,
-                    'role'     => $user->role
+                    'role'     => $user->role // Still store role from database if needed
                 ]);
 
                 $this->session->set_flashdata('success', 'Login successful!');
                 redirect('AdminController/dashboard');
             } else {
-                $this->session->set_flashdata('error', 'Invalid username, password, or role.');
+                $this->session->set_flashdata('error', 'Invalid username or password.');
                 redirect('AdminController/Login');
             }
         }
@@ -318,9 +319,58 @@ public function DryCleaning_Status()
         $data['customers'] = $this->CustomerModel->get_all_customers();
         $this->load->view('admin/export_pdf', $data);
     }
-
-    public function Report()
+    public function change_password_handler()
     {
-        $this->load->view('Admin/Report');
+        if (!$this->session->userdata('username')) {
+            $this->session->set_flashdata('error', 'Please log in first.');
+            redirect('AdminController/Login');
+        }
+
+        $currentPassword = $this->input->post('currentPassword', TRUE);
+        $newPassword     = $this->input->post('newPassword', TRUE);
+        $confirmPassword = $this->input->post('confirmPassword', TRUE);
+
+        $username = $this->session->userdata('username');
+
+        $admin = $this->db->get_where('admin', ['username' => $username])->row();
+
+        if (!$admin) {
+            $this->session->set_flashdata('error', 'User not found.');
+            redirect('AdminController/Profile');
+        }
+
+        if (!password_verify($currentPassword, $admin->password)) {
+            $this->session->set_flashdata('error', 'Current password is incorrect.');
+            redirect('AdminController/Profile');
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            $this->session->set_flashdata('error', 'New passwords do not match.');
+            redirect('AdminController/Profile');
+        }
+
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $this->db->where('username', $username);
+        $this->db->update('admin', ['password' => $hashedPassword]);
+
+        $this->session->set_flashdata('success', 'Password updated successfully.');
+        redirect('AdminController/Profile');
+    }
+
+    public function hash_existing_passwords()
+    {
+        $this->load->database();
+
+        $admins = $this->db->get('admin')->result();
+
+        foreach ($admins as $admin) {
+            // Skip if already hashed (optional check, for example length > 60 chars)
+            if (strlen($admin->password) < 60) {
+                $hashed = password_hash($admin->password, PASSWORD_DEFAULT);
+                $this->db->where('id', $admin->id)->update('admin', ['password' => $hashed]);
+            }
+        }
+
+        echo "Password hashing completed for existing admin users.";
     }
 }

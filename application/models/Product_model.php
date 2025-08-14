@@ -1,6 +1,12 @@
 <?php
 class Product_model extends CI_Model
 {
+    // Fetch all products (no join, just all fields)
+    public function get_all_products()
+    {
+        return $this->db->get('products')->result_array();
+    }
+
     // Fetch all products with their category name, price, and stock
     public function get_products_with_category()
     {

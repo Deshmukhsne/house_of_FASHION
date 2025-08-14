@@ -125,39 +125,35 @@
                                     <?php foreach ($products as $product): ?>
                                         <tr>
                                             <td>
-                                                <?php if (!empty($product->image) && file_exists($product->image)): ?>
-                                                    <img src="<?= base_url($product->image) ?>" height="60" onclick="openImageModal('<?= base_url($product->image) ?>')" style="cursor:pointer;" />
+                                                <?php if (!empty($product['image']) && file_exists($product['image'])): ?>
+                                                    <img src="<?= base_url($product['image']) ?>" height="60" onclick="openImageModal('<?= base_url($product['image']) ?>')" style="cursor:pointer;" />
                                                 <?php else: ?>
                                                     <span>No Image</span>
                                                 <?php endif; ?>
                                             </td>
-
-                                            <td><?= $product->name ?></td>
-                                            <!-- In your table row -->
-                                            <td><?= number_format($product->price, 2) ?></td>
-                                            <td><?= $product->category_name ?></td>
-                                            <td><?= $product->stock ?></td>
-                                            <td><span class="status-badge <?= $product->status == 'Available' ? 'status-available' : ($product->status == 'Rented' ? 'status-rented' : 'status-dryclean') ?>"><?= $product->status ?></span></td>
+                                            <td><?= htmlspecialchars($product['name']) ?></td>
+                                            <td><?= number_format((float)($product['price'] ?? 0), 2) ?></td>
+                                            <td><?= htmlspecialchars($product['category_name'] ?? '') ?></td>
+                                            <td><?= htmlspecialchars($product['stock'] ?? 0) ?></td>
+                                            <td>
+                                                <span class="status-badge <?= ($product['status'] ?? '') == 'Available' ? 'status-available' : (($product['status'] ?? '') == 'Rented' ? 'status-rented' : 'status-dryclean') ?>">
+                                                    <?= htmlspecialchars($product['status'] ?? '') ?>
+                                                </span>
+                                            </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-outline-primary"
                                                     onclick='openEditModal(<?= json_encode([
-                                                                                "id" => $product->id,
-                                                                                "name" => $product->name,
-                                                                                "price" => $product->price,
-                                                                                "stock" => $product->stock ?? 0,
-                                                                                "status" => $product->status ?? "",
-                                                                                "category_id" => $product->category_id,
-                                                                                "image" => $product->image
-                                                                            ]) ?>)'>
+                                                        "id" => $product['id'],
+                                                        "name" => $product['name'],
+                                                        "price" => $product['price'],
+                                                        "stock" => $product['stock'] ?? 0,
+                                                        "status" => $product['status'] ?? "",
+                                                        "category_id" => $product['category_id'],
+                                                        "image" => $product['image']
+                                                    ]) ?>)'>
                                                     Edit
                                                 </button>
-
-
-
-
-
-                                                <a href="<?= base_url('ProductController/delete_product/' . $product->id) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a>
-
+                                                <a href="<?= base_url('ProductController/delete_product/' . $product['id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

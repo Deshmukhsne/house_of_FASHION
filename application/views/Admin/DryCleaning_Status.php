@@ -133,7 +133,7 @@ $(document).ready(function() {
             confirmButtonText: 'Yes, Add'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.post("<?= base_url('AdminController/AddStock') ?>", { id: recordID }, function() {
+                $.post("<?= base_url('AdminController/ProductInventory') ?>", { id: recordID }, function() {
                     Swal.fire({
                         icon: 'success',
                         title: 'Added to Stock',

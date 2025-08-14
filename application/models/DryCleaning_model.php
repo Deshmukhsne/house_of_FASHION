@@ -27,14 +27,7 @@ class DryCleaning_model extends CI_Model {
     public function delete($id)
 {
     $this->db->where('id', $id);
-    return $this->db->delete('drycleaning_status'); // Replace with your actual table name
+    return $this->db->delete('drycleaning_status'); 
+   
 }
-
-
-    // public function delete($id)
-    // {
-    //     $this->db->where('id', $id);
-    //     $this->db->delete('drycleaning_status');
-    //     return $this->db->affected_rows() > 0;
-    // }
 }

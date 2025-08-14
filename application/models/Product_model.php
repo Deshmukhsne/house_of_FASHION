@@ -42,4 +42,11 @@ class Product_model extends CI_Model
         $this->db->where('id', $id);
         return $this->db->update('products', $data);
     }
+    public function increase_stock($product_id, $quantity = 1)
+{
+    $this->db->set('stock', "stock + {$quantity}", FALSE);
+    $this->db->where('id', $product_id);
+    return $this->db->update('products');
+}
+
 }

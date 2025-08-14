@@ -12,6 +12,8 @@ class AdminController extends CI_Controller
         $this->load->model('Login_Model');
         $this->load->model('Admin_Model');
         $this->load->model('Product_model');
+        
+        
 
          $this->load->model('DryCleaning_model');
 
@@ -154,17 +156,37 @@ public function save_drycleaning_forward()
 
     // Add to stock (only if Returned)
     public function add_to_stock()
-    {
-        $status = $this->input->post('status');
+{
+    $productId = $this->input->post('product_id'); // send from your button
+    $status = $this->input->post('status');
 
-        if ($status !== 'Returned') {
-            echo json_encode(['success' => false, 'message' => 'Status must be Returned']);
-            return;
-        }
-
-        // Stock saving logic here...
-        echo json_encode(['success' => true]);
+    if ($status !== 'Returned') {
+        echo json_encode(['success' => false, 'message' => 'Status must be Returned']);
+        return;
     }
+    // Get product_id from drycleaning_status table
+$product_id = $this->input->post('product_id');
+
+// Increase stock in products table
+$this->db->set('stock', 'stock+1', FALSE);
+$this->db->where('id', $product_id);
+$this->db->update('products');
+
+
+    // Get the current product
+    $product = $this->Product_model->get_product_by_id($productId);
+
+    if (!$product) {
+        echo json_encode(['success' => false, 'message' => 'Product not found']);
+        return;
+    }
+
+    // Increase stock
+    $newStock = $product->stock + 1;
+    $this->Product_model->update_product($productId, ['stock' => $newStock]);
+
+    echo json_encode(['success' => true, 'new_stock' => $newStock]);
+}
 
 
 

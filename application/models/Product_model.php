@@ -1,52 +1,48 @@
 <?php
 class Product_model extends CI_Model
 {
-
-    public function get_all_with_category()
-    {
-        $this->db->select('products.*, categories.name as category_name');
-        $this->db->from('products');
-        $this->db->join('categories', 'categories.id = products.category_id');
-        return $this->db->get()->result();
-    }
-
-    public function insert_product($data)
-    {
-        return $this->db->insert('products', $data);
-    }
-
-
-    public function delete_product($id)
-    {
-        return $this->db->where('id', $id)->delete('products');
-    }
+    
     public function get_all_products()
     {
-        $this->db->select('products.*, categories.name as category_name');
-        $this->db->from('products');
-        $this->db->join('categories', 'products.category_id = categories.id');
-        $query = $this->db->get();
-        return $query->result();
-    }
-    public function get_product_by_id($id)
-    {
-        $this->db->select('products.*, categories.name as category_name');
-        $this->db->from('products');
-        $this->db->join('categories', 'products.category_id = categories.id');
-        $this->db->where('products.id', $id);
-        return $this->db->get()->row();
+        return $this->db->get('products')->result_array();
     }
 
-    public function update_product($id, $data)
+    // Fetch all products with their category name, price, and stock
+    public function get_products_with_category()
     {
-        $this->db->where('id', $id);
-        return $this->db->update('products', $data);
+        return $this->db
+            ->select('products.id, products.name, products.category_id, products.price, products.stock, products.status, categories.name as category_name')
+            ->from('products')
+            ->join('categories', 'products.category_id = categories.id', 'left')
+            ->order_by('products.name', 'ASC')
+            ->get()->result_array();
     }
-    public function increase_stock($product_id, $quantity = 1)
-{
-    $this->db->set('stock', "stock + {$quantity}", FALSE);
-    $this->db->where('id', $product_id);
-    return $this->db->update('products');
-}
+
+    // Fetch all categories
+    public function get_all_categories()
+    {
+        return $this->db->order_by('name', 'ASC')->get('categories')->result_array();
+    }
+
+    // Fetch a single product by ID with category name
+    public function get_product_by_id($id)
+    {
+        $this->db->select('products.id, products.name, products.category_id, products.price, products.status, categories.name as category_name');
+        $this->db->from('products');
+        $this->db->join('categories', 'products.category_id = categories.id', 'left');
+        $this->db->where('products.id', $id);
+        return $this->db->get()->row_array();
+    }
+
+    // Fetch products by category for AJAX
+    public function get_products_by_category($category_id)
+    {
+        return $this->db->select('id, name, price, stock, status')
+            ->from('products')
+            ->where('category_id', $category_id)
+            ->order_by('name', 'ASC')
+            ->get()->result_array();
+    }
+   
 
 }

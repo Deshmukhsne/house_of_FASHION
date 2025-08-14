@@ -12,12 +12,11 @@ class AdminController extends CI_Controller
         $this->load->model('Login_Model');
         $this->load->model('Admin_Model');
         $this->load->model('Product_model');
-        
-        
 
          $this->load->model('DryCleaning_model');
 
         $this->load->model('DryCleaning_model');
+        $this->load->model('Billing_model');
     }
 
     public function index()
@@ -317,10 +316,21 @@ $this->db->update('products');
         redirect('AdminController/StaffManagement');
     }
 
+    // (Removed duplicate pay_due_amount function. The correct one is at the end of the file.)
     //billing 
     public function Billing()
     {
-        $this->load->view('Admin/BillSection');
+        $this->load->model('Product_model');
+        $this->load->model('Category_model');
+        $data['categories'] = $this->Category_model->get_all_categories();
+        $data['products'] = $this->Product_model->get_products_with_category();
+
+        // Generate a temporary invoice number for display
+        $date = date('Ymd');
+        $rand = strtoupper(substr(md5(uniqid(rand(), true)), 0, 4));
+        $data['temp_invoice_no'] = 'BILL-TEMP-' . $date . '-' . $rand;
+
+        $this->load->view('Admin/BillSection', $data);
     }
 
     public function ProductInventory()
@@ -336,7 +346,7 @@ $this->db->update('products');
         $this->load->view('Admin/add_category');
     }
 
-    public function BillHistory()
+    public function BillHistoryPage()
     {
         $this->load->view('Admin/BillHistory');
     }
@@ -470,8 +480,236 @@ $this->db->update('products');
 
         echo "Password hashing completed for existing admin users.";
     }
-    public  function printInvoice()
+
+
+    /* -------- BILLING FORM (CREATE) ---------- */
+    public function billing_dashboard()
     {
-        $this->load->view('admin/print_invoice');
+        // Get categories and products for dependent selects
+        $data['categories'] = $this->Billing_model->get_categories();           // id, name
+        $data['products']   = $this->Billing_model->get_products_with_cat();    // id, name, category_id, price, status
+        $this->load->view('BillingDashboard', $data);
+    }
+
+    /* -------- SAVE INVOICE ---------- */
+    public function save_invoice()
+    {
+        // Basic validation (server-side)
+
+        $customer_name   = $this->input->post('customerName', true);
+        $customer_mobile = $this->input->post('customerMobile', true);
+        $date            = $this->input->post('date', true);
+
+        if (!$customer_name || !$date || !$customer_mobile) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Customer Name, Mobile No, and Date are required.'
+            ]);
+            exit;
+        }
+
+        // Header fields
+        $depositAmount   = (float)$this->input->post('depositAmount');
+        $discountAmount  = (float)$this->input->post('discountAmount');
+        $totalAmount     = (float)$this->input->post('totalAmount');   // from hidden input
+        $totalPayable    = (float)$this->input->post('totalPayable');  // from hidden input
+        $paidAmount      = (float)$this->input->post('paidAmount');
+        $dueAmount       = (float)$this->input->post('dueAmount');
+        $paymentMode     = $this->input->post('paymentMode', true);
+
+        // Items arrays
+        $category_ids = $this->input->post('category');   // category_id[]
+        $product_ids  = $this->input->post('itemName');   // product_id[]
+        $prices       = $this->input->post('price');      // price[]
+        $qtys         = $this->input->post('qty');        // qty[]
+        $totals       = $this->input->post('total');      // total[]
+
+        // Insert invoice header with empty invoice_no (will be updated after generation)
+        $invoice_data = [
+            'invoice_no'      => '',
+            'customer_name'   => $customer_name,
+            'customer_mobile' => $customer_mobile,
+            'invoice_date'    => $date,
+            'deposit_amount'  => $depositAmount,
+            'discount_amount' => $discountAmount,
+            'total_amount'    => $totalAmount,
+            'total_payable'   => $totalPayable,
+            'paid_amount'     => $paidAmount,
+            'due_amount'      => $dueAmount,
+            'payment_mode'    => $paymentMode
+        ];
+        $invoice_id = $this->Billing_model->insert_invoice($invoice_data);
+
+        // Prepare and insert items
+        $items = [];
+        if (is_array($product_ids)) {
+            // Cache lookups to avoid repeated queries
+            $cats = $this->Billing_model->get_categories_map(); // [id => name]
+            $prods = $this->Billing_model->get_products_map();  // [id => ['name'=>..., 'price'=>..., 'category_id'=>...]]
+
+            for ($i = 0; $i < count($product_ids); $i++) {
+                $pid = (int)$product_ids[$i];
+                if (!isset($prods[$pid])) continue;
+
+                $cat_id = (int)($category_ids[$i] ?? $prods[$pid]['category_id']);
+                $category_name = $cats[$cat_id] ?? 'NA';
+
+                $price = isset($prices[$i]) ? (float)$prices[$i] : (float)$prods[$pid]['price'];
+                $qty   = isset($qtys[$i]) ? (int)$qtys[$i] : 1;
+                $total = isset($totals[$i]) ? (float)$totals[$i] : ($price * $qty);
+
+                $items[] = [
+                    'invoice_id' => $invoice_id,
+                    'category'   => $category_name,
+                    'item_name'  => $prods[$pid]['name'],
+                    'price'      => $price,
+                    'quantity'   => $qty,
+                    'total'      => $total
+                ];
+            }
+        }
+        if (!empty($items)) {
+            $this->Billing_model->insert_invoice_items($items);
+        }
+        // Generate custom invoice number
+        $unique_code = strtoupper(substr(md5(uniqid(rand(), true)), 0, 6));
+        $item_count = count($items);
+        $custom_invoice_no = "BILL{$invoice_id}{$item_count}{$unique_code}";
+        $this->Billing_model->update_invoice_number($invoice_id, $custom_invoice_no);
+
+        // Return JSON response
+        echo json_encode([
+            'success' => true,
+            'message' => 'Invoice saved successfully!',
+            'invoice_no' => $custom_invoice_no
+        ]);
+        exit;
+    }
+
+    /* -------- BILLING HISTORY (LIST) ---------- */
+    public function BillHistory()
+    {
+        $from = $this->input->get('from');
+        $to   = $this->input->get('to');
+
+        $data['invoices'] = $this->Billing_model->get_invoices($from, $to);
+
+        // Fetch items for each invoice
+        foreach ($data['invoices'] as &$inv) {
+            $inv['items'] = $this->db->where('invoice_id', $inv['id'])->get('invoice_items')->result_array();
+        }
+
+        $this->load->view('Admin/BillHistory', $data);
+    }
+
+    /* --------- API for dependent dropdown (optional AJAX) ---------- */
+    public function get_products_by_category($category_id)
+    {
+        $products = $this->Billing_model->get_products_by_category((int)$category_id);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($products));
+    }
+
+    /* -------- VIEW / DELETE (optional) -------- */
+    public function view_invoice($id)
+    {
+        $invoice = $this->Billing_model->get_invoice_by_id((int)$id);
+        if ($this->input->is_ajax_request()) {
+            // Return JSON for modal
+            echo json_encode($invoice);
+            return;
+        }
+        $data['invoice'] = $invoice;
+        $this->load->view('ViewInvoice', $data);
+    }
+
+    public function delete_invoice($id)
+    {
+        $this->Billing_model->delete_invoice((int)$id);
+        $this->session->set_flashdata('success', 'Invoice deleted.');
+        // Redirect to BillHistory (case-sensitive, matches route)
+        redirect('AdminController/BillHistory');
+    }
+
+    // AJAX endpoint for products by category
+    public function get_products()
+    {
+        $category_id = $this->input->post('category_id');
+        $products = $this->Product_model->get_products_by_category($category_id);
+        echo json_encode($products);
+    }
+
+    /**
+     * AJAX endpoint to pay/update due amount for an invoice
+     * Expects: invoice_id, pay_amount (amount to pay towards due)
+     * Returns: JSON (success, new paid/due values, message)
+     */
+    public function pay_due_amount()
+    {
+        if ($this->input->server('REQUEST_METHOD') !== 'POST') {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid request method.'
+            ]);
+            return;
+        }
+
+        $invoice_id = (int)$this->input->post('invoice_id');
+        $pay_amount = (float)$this->input->post('pay_amount');
+
+        if ($invoice_id <= 0 || $pay_amount <= 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid invoice or amount.'
+            ]);
+            return;
+        }
+
+        // Fetch invoice
+        $invoice = $this->Billing_model->get_invoice_by_id($invoice_id);
+        if (!$invoice) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invoice not found.'
+            ]);
+            return;
+        }
+
+        $current_due = (float)$invoice['due_amount'];
+        $current_paid = (float)$invoice['paid_amount'];
+
+        if ($current_due <= 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No due amount left for this invoice.'
+            ]);
+            return;
+        }
+
+        if ($pay_amount > $current_due) {
+            $pay_amount = $current_due; // Cap to due
+        }
+
+        $new_paid = $current_paid + $pay_amount;
+        $new_due = $current_due - $pay_amount;
+
+        // Update invoice
+        $update = [
+            'paid_amount' => $new_paid,
+            'due_amount' => $new_due
+        ];
+        $this->Billing_model->update_invoice($invoice_id, $update);
+
+        // Optionally, log the payment in a payments table (not implemented here)
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Due payment updated successfully.',
+            'paid_amount' => $new_paid,
+            'due_amount' => $new_due
+        ]);
     }
 }
+
+

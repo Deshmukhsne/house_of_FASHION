@@ -41,6 +41,30 @@
         .table th {
             color: #a86d01ff;
         }
+        .btn-gold {
+            background: linear-gradient(90deg, #B37B16, #FFD27F);
+            color: #000;
+            font-weight: 600;
+            border: none;
+            transition: all .3s ease;
+        }
+        .btn-gold:hover {
+            background: linear-gradient(90deg, #FFD27F, #B37B16);
+            color: #000;
+            box-shadow: 0 4px 8px rgba(0,0,0,.1);
+        }
+        .btn-black {
+            background: #111;
+            color: #FFD27F;
+            font-weight: 600;
+            border: none;
+            transition: all .3s ease;
+        }
+        .btn-black:hover {
+            background: #FFD27F;
+            color: #111;
+            box-shadow: 0 4px 8px rgba(0,0,0,.1);
+        }
     </style>
 </head>
 
@@ -83,7 +107,9 @@
                             <th>Invoice #</th>
                             <th>Date</th>
                             <th>Customer</th>
+                            <th>Mobile No</th>
                             <th>Total (₹)</th>
+                            <th>Deposit (₹)</th>
                             <th>Paid (₹)</th>
                             <th>Due (₹)</th>
                             <th>Payment</th>
@@ -98,7 +124,9 @@
                             <td><span class="fw-bold text-gold"><?= htmlspecialchars($inv['invoice_no']) ?></span></td>
                             <td><?= htmlspecialchars($inv['invoice_date']) ?></td>
                             <td><?= htmlspecialchars($inv['customer_name']) ?></td>
+                            <td><?= htmlspecialchars($inv['customer_mobile'] ?? '-') ?></td>
                             <td class="text-end">₹<?= number_format($inv['total_amount'], 2) ?></td>
+                            <td class="text-end">₹<?= number_format($inv['deposit_amount'], 2) ?></td>
                             <td class="text-end">₹<?= number_format($inv['paid_amount'], 2) ?></td>
                             <td class="text-end">₹<?= number_format($inv['due_amount'], 2) ?></td>
                             <td><?= htmlspecialchars($inv['payment_mode']) ?></td>
@@ -118,13 +146,16 @@
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-info btn-sm mb-1 view-invoice-btn" data-invoice-id="<?= $inv['id'] ?>">View</button>
-                                <a href="<?= base_url('AdminController/delete_invoice/' . $inv['id']) ?>" onclick="return confirm('Are you sure you want to delete this invoice?')" class="btn btn-danger btn-sm">Delete</a>
+                                <button type="button" class="btn btn-gold btn-sm mb-1 view-invoice-btn" data-invoice-id="<?= $inv['id'] ?>">View</button>
+                                <a href="<?= base_url('AdminController/delete_invoice/' . $inv['id']) ?>" onclick="return confirm('Are you sure you want to delete this invoice?')" class="btn btn-gold btn-sm">Delete</a>
+                                <?php if ($inv['due_amount'] > 0): ?>
+                                <button type="button" class="btn btn-black btn-sm pay-due-btn" data-invoice-id="<?= $inv['id'] ?>" data-due="<?= $inv['due_amount'] ?>">Pay Due</button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <tr><td colspan="9">No records found.</td></tr>
+                        <tr><td colspan="11">No records found.</td></tr>
                     <?php endif; ?>
                     </tbody>
                 </table>
@@ -141,6 +172,41 @@
                   <div class="modal-body" id="invoiceModalBody">
                     <!-- Content loaded by JS -->
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal for Pay Due -->
+            <div class="modal fade" id="payDueModal" tabindex="-1" aria-labelledby="payDueModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="payDueModalLabel">Pay Due Amount</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <form id="payDueForm">
+                    <div class="modal-body">
+                      <input type="hidden" name="invoice_id" id="payDueInvoiceId">
+                      <div class="mb-3">
+                        <label for="payDueAmount" class="form-label">Due Amount (₹)</label>
+                        <input type="number" class="form-control" name="pay_amount" id="payDueAmount" min="1" step="0.01" required>
+                        <div class="form-text">Enter the amount you want to pay (up to the due amount).</div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="payDuePaymentMode" class="form-label">Payment Mode</label>
+                        <select class="form-select" name="pay_due_payment_mode" id="payDuePaymentMode" required>
+                          <option value="">Select</option>
+                          <option value="Cash">Cash</option>
+                          <option value="UPI">UPI</option>
+                          <option value="Card">Card</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-gold">Pay</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -194,10 +260,62 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
-});
-</script>
 
-<!-- Sidebar toggle -->
+    document.querySelectorAll('.pay-due-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var invoiceId = this.getAttribute('data-invoice-id');
+            var due = this.getAttribute('data-due');
+            document.getElementById('payDueInvoiceId').value = invoiceId;
+            document.getElementById('payDueAmount').value = due;
+            document.getElementById('payDueAmount').setAttribute('max', due);
+            var modal = new bootstrap.Modal(document.getElementById('payDueModal'));
+            modal.show();
+        });
+    });
+
+    document.getElementById('payDueForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var form = this;
+        var payAmount = parseFloat(form.pay_amount.value);
+        var maxDue = parseFloat(form.pay_amount.max);
+        if (isNaN(payAmount) || payAmount <= 0) {
+            alert('Please enter a valid amount to pay.');
+            return;
+        }
+        if (payAmount > maxDue) {
+            alert('You cannot pay more than the due amount.');
+            form.pay_amount.value = maxDue;
+            return;
+        }
+        var formData = new FormData(form);
+        fetch('<?= base_url('AdminController/pay_due_amount') ?>', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then data => {
+            if (data.success) {
+                if (window.Swal) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message,
+                        timer: 1800,
+                        showConfirmButton: false
+                    });
+                } else {
+                    alert(data.message);
+                }
+                setTimeout(() => window.location.reload(), 1200);
+            } else {
+                alert(data.message || 'Failed to update due payment.');
+            }
+        })
+        .catch(() => alert('Error updating due payment.'));
+    });
+});
+
+// Sidebar toggle
 <script>
     const toggler = document.querySelector(".toggler-btn");
     const closeBtn = document.querySelector(".close-sidebar");

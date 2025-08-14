@@ -255,7 +255,6 @@ function updateAllTotals() {
 function updateBalance() {
     const totalPayable = parseFloat(document.getElementById('totalPayable').textContent.replace('₹','')) || 0;
     let paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
-    const depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
     // Cap paidAmount so it cannot exceed totalPayable
     if (paidAmount > totalPayable) {
         paidAmount = totalPayable;
@@ -270,7 +269,8 @@ function updateBalance() {
             });
         }
     }
-    let dueAmount = totalPayable - (paidAmount + depositAmount);
+    // Due = totalPayable - paidAmount
+    let dueAmount = totalPayable - paidAmount;
     if (dueAmount < 0) dueAmount = 0;
     document.getElementById('dueAmount').value = dueAmount.toFixed(2);
 }

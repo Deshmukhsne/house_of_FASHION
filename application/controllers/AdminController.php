@@ -202,6 +202,7 @@ class AdminController extends CI_Controller
         redirect('AdminController/StaffManagement');
     }
 
+    // (Removed duplicate pay_due_amount function. The correct one is at the end of the file.)
     //billing 
     public function Billing()
     {
@@ -523,6 +524,77 @@ class AdminController extends CI_Controller
         $category_id = $this->input->post('category_id');
         $products = $this->Product_model->get_products_by_category($category_id);
         echo json_encode($products);
+    }
+
+    /**
+     * AJAX endpoint to pay/update due amount for an invoice
+     * Expects: invoice_id, pay_amount (amount to pay towards due)
+     * Returns: JSON (success, new paid/due values, message)
+     */
+    public function pay_due_amount()
+    {
+        if ($this->input->server('REQUEST_METHOD') !== 'POST') {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid request method.'
+            ]);
+            return;
+        }
+
+        $invoice_id = (int)$this->input->post('invoice_id');
+        $pay_amount = (float)$this->input->post('pay_amount');
+
+        if ($invoice_id <= 0 || $pay_amount <= 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid invoice or amount.'
+            ]);
+            return;
+        }
+
+        // Fetch invoice
+        $invoice = $this->Billing_model->get_invoice_by_id($invoice_id);
+        if (!$invoice) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invoice not found.'
+            ]);
+            return;
+        }
+
+        $current_due = (float)$invoice['due_amount'];
+        $current_paid = (float)$invoice['paid_amount'];
+
+        if ($current_due <= 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No due amount left for this invoice.'
+            ]);
+            return;
+        }
+
+        if ($pay_amount > $current_due) {
+            $pay_amount = $current_due; // Cap to due
+        }
+
+        $new_paid = $current_paid + $pay_amount;
+        $new_due = $current_due - $pay_amount;
+
+        // Update invoice
+        $update = [
+            'paid_amount' => $new_paid,
+            'due_amount' => $new_due
+        ];
+        $this->Billing_model->update_invoice($invoice_id, $update);
+
+        // Optionally, log the payment in a payments table (not implemented here)
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Due payment updated successfully.',
+            'paid_amount' => $new_paid,
+            'due_amount' => $new_due
+        ]);
     }
 }
 

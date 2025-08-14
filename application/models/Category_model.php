@@ -9,8 +9,7 @@ class Category_model extends CI_Model {
         return $this->db->insert('categories', $data);
     }
     public function get_all_categories() {
-    $query = $this->db->get('categories'); // use your table name
-    return $query->result();
-}
+        return $this->db->order_by('name', 'ASC')->get('categories')->result_array();
+    }
 
 }

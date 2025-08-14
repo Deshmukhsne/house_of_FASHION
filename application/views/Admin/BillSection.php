@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Billing Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <?php $this->load->view('CommonLinks'); ?>
     <link rel="stylesheet" href="<?= base_url('assets/style.css') ?>" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -67,21 +67,18 @@
                         <div class="mb-4">
                             <label class="form-section-title">Items</label>
                             <table class="table table-bordered align-middle">
-                                <thead class="table-light">
+                                <thead>
                                     <tr>
-                                        <th>Product Code</th>
-                                        <th>Item</th>
-                                        <th>Price</th>
+                                        <th>Category</th>
+                                        <th>Item Name</th>
+                                        <th>Price (₹)</th>
                                         <th>Qty</th>
-                                        <th>Total</th>
-                                        <th>Discount</th>
-                                        <th>Payment Mode</th>
+                                        <th>Total (₹)</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="itemTable">
                                     <tr>
-                                        <td><input type="text" name="items[0][product_code]" class="form-control"></td>
                                         <td>
                                             <select name="category[]" class="form-select category-select" onchange="onCategoryChange(this)">
                                                 <option value="">Select</option>
@@ -258,6 +255,7 @@ function updateAllTotals() {
 function updateBalance() {
     const totalPayable = parseFloat(document.getElementById('totalPayable').textContent.replace('₹','')) || 0;
     let paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+    const depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
     // Cap paidAmount so it cannot exceed totalPayable
     if (paidAmount > totalPayable) {
         paidAmount = totalPayable;
@@ -272,8 +270,7 @@ function updateBalance() {
             });
         }
     }
-    // Due = totalPayable - paidAmount
-    let dueAmount = totalPayable - paidAmount;
+    let dueAmount = totalPayable - (paidAmount + depositAmount);
     if (dueAmount < 0) dueAmount = 0;
     document.getElementById('dueAmount').value = dueAmount.toFixed(2);
 }

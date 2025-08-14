@@ -614,14 +614,29 @@ $this->db->update('products');
     /* -------- VIEW / DELETE (optional) -------- */
     public function view_invoice($id)
     {
-        $invoice = $this->Billing_model->get_invoice_by_id((int)$id);
-        if ($this->input->is_ajax_request()) {
-            // Return JSON for modal
-            echo json_encode($invoice);
+        if (!$this->input->is_ajax_request()) show_404();
+        $this->load->model('Billing_model');
+        $invoice = $this->Billing_model->get_invoice_by_id($id);
+        if (!$invoice) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['success' => false, 'message' => 'Invoice not found']));
             return;
         }
-        $data['invoice'] = $invoice;
-        $this->load->view('ViewInvoice', $data);
+        // Ensure all item fields are present and properly typed
+        if (isset($invoice['items']) && is_array($invoice['items'])) {
+            foreach ($invoice['items'] as &$item) {
+                $item['category'] = isset($item['category']) ? $item['category'] : '';
+                $item['item_name'] = isset($item['item_name']) ? $item['item_name'] : '';
+                $item['price'] = isset($item['price']) ? (float)$item['price'] : 0.0;
+                $item['quantity'] = isset($item['quantity']) ? (int)$item['quantity'] : 0;
+                $item['total'] = isset($item['total']) ? (float)$item['total'] : 0.0;
+            }
+        }
+        $invoice['success'] = true;
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($invoice));
     }
 
     public function delete_invoice($id)
@@ -645,70 +660,53 @@ $this->db->update('products');
      * Expects: invoice_id, pay_amount (amount to pay towards due)
      * Returns: JSON (success, new paid/due values, message)
      */
-    public function pay_due_amount()
-    {
-        if ($this->input->server('REQUEST_METHOD') !== 'POST') {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid request method.'
-            ]);
-            return;
-        }
-
-        $invoice_id = (int)$this->input->post('invoice_id');
+    public function pay_due_amount() {
+        if (!$this->input->is_ajax_request()) show_404();
+        $invoice_id = $this->input->post('invoice_id');
         $pay_amount = (float)$this->input->post('pay_amount');
-
-        if ($invoice_id <= 0 || $pay_amount <= 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid invoice or amount.'
-            ]);
-            return;
-        }
-
-        // Fetch invoice
+        $pay_mode = $this->input->post('pay_due_payment_mode');
+        $this->load->model('Billing_model');
         $invoice = $this->Billing_model->get_invoice_by_id($invoice_id);
         if (!$invoice) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invoice not found.'
-            ]);
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['success' => false, 'message' => 'Invoice not found']));
             return;
         }
-
+        // Only allow payment if there is a due amount
         $current_due = (float)$invoice['due_amount'];
         $current_paid = (float)$invoice['paid_amount'];
-
-        if ($current_due <= 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'No due amount left for this invoice.'
-            ]);
+        if ($pay_amount <= 0 || $pay_amount > $current_due) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['success' => false, 'message' => 'Invalid amount']));
             return;
         }
-
-        if ($pay_amount > $current_due) {
-            $pay_amount = $current_due; // Cap to due
-        }
-
+        // Calculate new paid and due amounts
         $new_paid = $current_paid + $pay_amount;
         $new_due = $current_due - $pay_amount;
-
         // Update invoice
-        $update = [
+        $update = $this->Billing_model->update_invoice($invoice_id, [
             'paid_amount' => $new_paid,
-            'due_amount' => $new_due
-        ];
-        $this->Billing_model->update_invoice($invoice_id, $update);
-
-        // Optionally, log the payment in a payments table (not implemented here)
-
-        echo json_encode([
-            'success' => true,
-            'message' => 'Due payment updated successfully.',
-            'paid_amount' => $new_paid,
-            'due_amount' => $new_due
+            'due_amount' => $new_due,
+            'payment_mode' => $pay_mode
         ]);
+        // Log payment
+        $log = $this->Billing_model->log_due_payment($invoice_id, $pay_amount);
+        if ($update && $log) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'success' => true,
+                    'message' => 'Due payment updated successfully',
+                    'paid_amount' => $new_paid,
+                    'due_amount' => $new_due
+                ]));
+        } else {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['success' => false, 'message' => 'Failed to update due payment.']));
+        }
     }
 }
 

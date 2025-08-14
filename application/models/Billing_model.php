@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Billing_model extends CI_Model
 {
     /**
-     * Log a due payment for an invoice (optional, for audit trail)
+     * Log a due payment for an invoice (for audit trail)
      * @param int $invoice_id
      * @param float $amount
      * @return bool
@@ -16,8 +16,16 @@ class Billing_model extends CI_Model
             'amount' => $amount,
             'paid_at' => date('Y-m-d H:i:s')
         ];
-        // You must create a table `invoice_payments` with columns: id, invoice_id, amount, paid_at
         return $this->db->insert('invoice_payments', $data);
+    }
+    /**
+     * Get all payments for an invoice (for payment history display)
+     * @param int $invoice_id
+     * @return array
+     */
+    public function get_payments_by_invoice($invoice_id)
+    {
+        return $this->db->where('invoice_id', $invoice_id)->order_by('paid_at', 'ASC')->get('invoice_payments')->result_array();
     }
     /**
      * Update invoice fields by invoice_id
@@ -118,8 +126,15 @@ class Billing_model extends CI_Model
         return $this->db->affected_rows();
     }
 
+    /**
+     * Update the invoice number for a given invoice
+     * @param int $invoice_id
+     * @param string $invoice_no
+     * @return bool
+     */
     public function update_invoice_number($invoice_id, $invoice_no) {
         $this->db->where('id', $invoice_id);
         $this->db->update('invoices', ['invoice_no' => $invoice_no]);
+        return $this->db->affected_rows() > 0;
     }
 }

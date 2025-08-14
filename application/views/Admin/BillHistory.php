@@ -188,17 +188,18 @@
                     <div class="modal-body">
                       <input type="hidden" name="invoice_id" id="payDueInvoiceId">
                       <div class="mb-3">
-                        <label for="payDueAmount" class="form-label">Due Amount (₹)</label>
-                        <input type="number" class="form-control" name="pay_amount" id="payDueAmount" min="1" step="0.01" required>
-                        <div class="form-text">Enter the amount you want to pay (up to the due amount).</div>
+                        <label for="payDueAmount" class="form-label">Amount to Pay (₹):</label>
+                        <input type="number" name="pay_amount" id="payDueAmount" class="form-control" min="1" step="0.01" required>
+                        <div class="form-text">You can pay up to the due amount only.</div>
                       </div>
                       <div class="mb-3">
-                        <label for="payDuePaymentMode" class="form-label">Payment Mode</label>
-                        <select class="form-select" name="pay_due_payment_mode" id="payDuePaymentMode" required>
+                        <label for="payDuePaymentMode" class="form-label">Payment Mode:</label>
+                        <select name="pay_due_payment_mode" id="payDuePaymentMode" class="form-select" required>
                           <option value="">Select</option>
                           <option value="Cash">Cash</option>
-                          <option value="UPI">UPI</option>
                           <option value="Card">Card</option>
+                          <option value="UPI">UPI</option>
+                          <option value="Bank">Bank</option>
                         </select>
                       </div>
                     </div>
@@ -227,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.view-invoice-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var invoiceId = this.getAttribute('data-invoice-id');
-            fetch('<?= base_url('AdminController/view_invoice/') ?>' + invoiceId, {
+            fetch('<?= base_url('index.php/AdminController/view_invoice/') ?>' + invoiceId, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
             .then(res => res.json())
@@ -265,11 +266,21 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             var invoiceId = this.getAttribute('data-invoice-id');
             var due = this.getAttribute('data-due');
-            document.getElementById('payDueInvoiceId').value = invoiceId;
-            document.getElementById('payDueAmount').value = due;
-            document.getElementById('payDueAmount').setAttribute('max', due);
-            var modal = new bootstrap.Modal(document.getElementById('payDueModal'));
-            modal.show();
+            // Defensive: ensure modal and fields exist before setting values
+            var modalEl = document.getElementById('payDueModal');
+            var invoiceInput = document.getElementById('payDueInvoiceId');
+            var amountInput = document.getElementById('payDueAmount');
+            var modeInput = document.getElementById('payDuePaymentMode');
+            if (modalEl && invoiceInput && amountInput && modeInput) {
+                invoiceInput.value = invoiceId;
+                amountInput.value = due;
+                amountInput.setAttribute('max', due);
+                modeInput.value = '';
+                // Fix: ensure modal is not already shown, then show
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('payDueModal')).show();
+            } else {
+                alert('Payment modal could not be opened. Please reload the page.');
+            }
         });
     });
 
@@ -278,6 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var form = this;
         var payAmount = parseFloat(form.pay_amount.value);
         var maxDue = parseFloat(form.pay_amount.max);
+        var payMode = form.pay_due_payment_mode.value;
         if (isNaN(payAmount) || payAmount <= 0) {
             alert('Please enter a valid amount to pay.');
             return;
@@ -287,13 +299,17 @@ document.addEventListener('DOMContentLoaded', function() {
             form.pay_amount.value = maxDue;
             return;
         }
+        if (!payMode) {
+            alert('Please select a payment mode.');
+            return;
+        }
         var formData = new FormData(form);
-        fetch('<?= base_url('AdminController/pay_due_amount') ?>', {
+        fetch('<?= base_url('index.php/AdminController/pay_due_amount') ?>', {
             method: 'POST',
             body: formData
         })
         .then(res => res.json())
-        .then data => {
+        .then(function(data) {
             if (data.success) {
                 if (window.Swal) {
                     Swal.fire({
@@ -315,8 +331,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
 // Sidebar toggle
-<script>
+document.addEventListener('DOMContentLoaded', function() {
     const toggler = document.querySelector(".toggler-btn");
     const closeBtn = document.querySelector(".close-sidebar");
     const sidebar = document.querySelector("#sidebar");
@@ -331,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebar.classList.remove("collapsed");
         });
     }
-</script>
+});
 
 </body>
 </html>

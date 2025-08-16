@@ -358,7 +358,7 @@
                     <div class="collapse" id="reportsSubmenu">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="<?= base_url('AdminController/Report') ?>" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
+                                <a href="<?= base_url('AdminController/DailyReport') ?>" class="sidebar-link" id="dailyreport-link" style="font-size: 18px;">
                                     <i class="bi bi-calendar-day"></i>
                                     <span class="ms-1">Daily Report</span>
                                 </a>

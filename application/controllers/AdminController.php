@@ -12,9 +12,9 @@ class AdminController extends CI_Controller
         $this->load->model('Login_Model');
         $this->load->model('Admin_Model');
         $this->load->model('Product_model');
-
-         $this->load->model('DryCleaning_model');
-
+        $this->load->model('Report_model');
+        $this->load->model('DryCleaning_model');
+        $this->load->model('Invoice_model');
         $this->load->model('DryCleaning_model');
         $this->load->model('Billing_model');
     }
@@ -49,47 +49,45 @@ class AdminController extends CI_Controller
         $this->load->view("CommonLinks");
     }
 
-    
 
- 
 
-public function DryCleaning_Forward()
-{
-    $this->load->model('OrdersModel');
-    $data['products'] = $this->OrdersModel->get_all_products_for_drycleaning();
-    $this->load->view('Admin/DryCleaning_Forward', $data);
-}
 
-// Save forward form to DB
-public function save_drycleaning_forward()
-{
-    $this->load->model('DryCleaning_model');
 
-    $data = [
-        'vendor_name'     => $this->input->post('vendor_name'),
-        'vendor_mobile'   => $this->input->post('vendor_mobile'),
-        'product_name'    => $this->input->post('product_name'),
-        'product_status'  => $this->input->post('product_status'),
-        'forward_date'    => $this->input->post('forward_date'),
-        'return_date'     => $this->input->post('return_date') ?: null,
-        'status'          => 'In Cleaning', // default
-        'expected_return' => $this->input->post('expected_return'),
-        'cleaning_notes'  => $this->input->post('cleaning_notes'),
-        'created_at'      => date('Y-m-d H:i:s'),
-        'updated_at'      => date('Y-m-d H:i:s')
-    ];
 
-    if ($this->DryCleaning_model->insert($data)) {
-        $this->session->set_flashdata('success', 'Dry cleaning forwarded successfully.');
-    } else {
-        $this->session->set_flashdata('error', 'Failed to forward dry cleaning.');
+    public function DryCleaning_Forward()
+    {
+        $this->load->model('OrdersModel');
+        $data['products'] = $this->OrdersModel->get_all_products_for_drycleaning();
+        $this->load->view('Admin/DryCleaning_Forward', $data);
     }
 
-    redirect('AdminController/DryCleaning_Forward');
-}
+    // Save forward form to DB
+    public function save_drycleaning_forward()
+    {
+        $this->load->model('DryCleaning_model');
 
-//Drycleaning 
-// Show status page
+        $data = [
+            'vendor_name'     => $this->input->post('vendor_name'),
+            'vendor_mobile'   => $this->input->post('vendor_mobile'),
+            'product_name'    => $this->input->post('product_name'),
+            'product_status'  => $this->input->post('product_status'),
+            'forward_date'    => $this->input->post('forward_date'),
+            'return_date'     => $this->input->post('return_date') ?: null,
+            'status'          => 'In Cleaning', // default
+            'expected_return' => $this->input->post('expected_return'),
+            'cleaning_notes'  => $this->input->post('cleaning_notes'),
+            'created_at'      => date('Y-m-d H:i:s'),
+            'updated_at'      => date('Y-m-d H:i:s')
+        ];
+
+        if ($this->DryCleaning_model->insert($data)) {
+            $this->session->set_flashdata('success', 'Dry cleaning forwarded successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to forward dry cleaning.');
+        }
+
+        redirect('AdminController/DryCleaning_Forward');
+    }
 
 
     // Save new record
@@ -155,37 +153,37 @@ public function save_drycleaning_forward()
 
     // Add to stock (only if Returned)
     public function add_to_stock()
-{
-    $productId = $this->input->post('product_id'); // send from your button
-    $status = $this->input->post('status');
+    {
+        $productId = $this->input->post('product_id'); // send from your button
+        $status = $this->input->post('status');
 
-    if ($status !== 'Returned') {
-        echo json_encode(['success' => false, 'message' => 'Status must be Returned']);
-        return;
+        if ($status !== 'Returned') {
+            echo json_encode(['success' => false, 'message' => 'Status must be Returned']);
+            return;
+        }
+        // Get product_id from drycleaning_status table
+        $product_id = $this->input->post('product_id');
+
+        // Increase stock in products table
+        $this->db->set('stock', 'stock+1', FALSE);
+        $this->db->where('id', $product_id);
+        $this->db->update('products');
+
+
+        // Get the current product
+        $product = $this->Product_model->get_product_by_id($productId);
+
+        if (!$product) {
+            echo json_encode(['success' => false, 'message' => 'Product not found']);
+            return;
+        }
+
+        // Increase stock
+        $newStock = $product->stock + 1;
+        $this->Product_model->update_product($productId, ['stock' => $newStock]);
+
+        echo json_encode(['success' => true, 'new_stock' => $newStock]);
     }
-    // Get product_id from drycleaning_status table
-$product_id = $this->input->post('product_id');
-
-// Increase stock in products table
-$this->db->set('stock', 'stock+1', FALSE);
-$this->db->where('id', $product_id);
-$this->db->update('products');
-
-
-    // Get the current product
-    $product = $this->Product_model->get_product_by_id($productId);
-
-    if (!$product) {
-        echo json_encode(['success' => false, 'message' => 'Product not found']);
-        return;
-    }
-
-    // Increase stock
-    $newStock = $product->stock + 1;
-    $this->Product_model->update_product($productId, ['stock' => $newStock]);
-
-    echo json_encode(['success' => true, 'new_stock' => $newStock]);
-}
 
 
 
@@ -194,14 +192,35 @@ $this->db->update('products');
     {
         $this->load->view('Admin/Orders');
     }
-
     public function Dashboard()
     {
         if (!$this->session->userdata('username')) {
             redirect('AdminController/Login');
         }
-        $this->load->view('Admin/AdminDashboard');
+
+        // Load models first
+        $this->load->model('Product_model');
+        $this->load->model('Admin_Model');
+
+        // Stock data
+        $data['total_stock_quantity'] = $this->Product_model->get_total_stock_quantity();
+        $data['total_stock_value'] = $this->Product_model->get_total_stock_value();
+
+        // Deposits & Revenue
+        $data['total_deposits'] = $this->Admin_Model->get_total_deposits();
+        $data['total_revenue'] = $this->Admin_Model->get_total_revenue();
+
+        // Category-wise sales
+        $data['category_sales'] = $this->Admin_Model->get_category_wise_sales();
+        // Analytics data
+        $data['revenue_analytics'] = $this->Admin_Model->get_revenue_analytics();
+        $data['category_sales'] = $this->Admin_Model->get_category_wise_sales();
+        $data['payment_stats'] = $this->Admin_Model->get_payment_method_stats();
+
+        // Load dashboard view once
+        $this->load->view('Admin/AdminDashboard', $data);
     }
+
 
     public function Login()
     {
@@ -336,8 +355,11 @@ $this->db->update('products');
     public function ProductInventory()
     {
         $this->load->model('Product_model');
+        $this->load->model('Category_model');
 
         $data['products'] = $this->Product_model->get_all_products();
+        $data['categories'] = $this->Category_model->get_all_categories();
+
         $this->load->view('Admin/product_inventory', $data);
     }
 
@@ -356,11 +378,51 @@ $this->db->update('products');
     }
     public function MonthlyReport()
     {
-        $this->load->view('Admin/monthlyreport');
+        if (!$this->session->userdata('username')) {
+            redirect('AdminController/Login');
+        }
+
+        // Get selected month/year or default to current
+        $selected_month = $this->input->get('month') ?: date('m');
+        $selected_year = $this->input->get('year') ?: date('Y');
+
+        // Get report data
+        $data['report'] = $this->Report_model->get_monthly_report($selected_year, $selected_month);
+
+
+        $data['selected_month'] = $selected_month;
+        $data['selected_year'] = $selected_year;
+        $data['months'] = [
+            '01' => 'January',
+            '02' => 'February',
+            '03' => 'March',
+            '04' => 'April',
+            '05' => 'May',
+            '06' => 'June',
+            '07' => 'July',
+            '08' => 'August',
+            '09' => 'September',
+            '10' => 'October',
+            '11' => 'November',
+            '12' => 'December'
+        ];
+        $data['years'] = range(date('Y') - 5, date('Y'));
+
+        $this->load->view('Admin/monthlyreport', $data);
     }
-    public function Report()
+    public function DailyReport()
     {
-        $this->load->view('Admin/Report');
+        $this->load->model('Report_model');
+
+        // Get today's date or selected date
+        $date = $this->input->get('date') ? $this->input->get('date') : date('Y-m-d');
+
+        // Get report data
+        $data['report'] = $this->Report_model->get_daily_sales($date);
+        $data['report_date'] = $date;
+
+        // Load view
+        $this->load->view('admin/DailyReport', $data);
     }
 
     public function Profile()
@@ -660,7 +722,8 @@ $this->db->update('products');
      * Expects: invoice_id, pay_amount (amount to pay towards due)
      * Returns: JSON (success, new paid/due values, message)
      */
-    public function pay_due_amount() {
+    public function pay_due_amount()
+    {
         if (!$this->input->is_ajax_request()) show_404();
         $invoice_id = $this->input->post('invoice_id');
         $pay_amount = (float)$this->input->post('pay_amount');
@@ -709,5 +772,3 @@ $this->db->update('products');
         }
     }
 }
-
-
